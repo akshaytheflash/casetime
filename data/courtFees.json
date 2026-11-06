@@ -1,0 +1,45 @@
+{
+  "note": "Court fees are a State subject (Entry 3, State List). Parent Act: Court Fees Act, 1870 (Act 7 of 1870), Schedule I Art. 1 (ad valorem on plaint). State schedules amend it. Rates below are the max ad valorem OPENING rate with stated cap, summarised from the secondary source cited per state (accessed 2026-11-06). They are illustrative for MONEY suits only; declaratory/injunction/multiple-relief suits and later notifications differ. Verify with the court Nazir / e-filing calculator before filing.",
+  "states": [
+    {
+      "state": "Delhi",
+      "openingRate": 0.05,
+      "cap": 200000,
+      "act": "Court Fees Act, 1870 (Delhi Amendment) Act, 1967 / state schedule",
+      "source": "NyaySevak Court Fee Calculator India 2026 (https://www.nyaysevak.com/legal-tools/court-fee-calculator), accessed 2026-11-06: 'Delhi 5% opening rate, capped at ₹2 lakh.'",
+      "confidence": "medium"
+    },
+    {
+      "state": "Maharashtra",
+      "openingRate": 0.06,
+      "cap": 300000,
+      "act": "Maharashtra Court-Fees Act, 1959 (Act 36 of 1959), Sch. I Art. 1",
+      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Maharashtra 6% opening, cap ₹3 lakh.' Act text: Indian Kanoon / IGR Maharashtra (https://igrmaharashtra.gov.in/pdf/documents/Act_The-Maharashtra-Court-Fees-Act.pdf)",
+      "confidence": "medium"
+    },
+    {
+      "state": "Karnataka",
+      "openingRate": 0.075,
+      "cap": null,
+      "act": "Karnataka Court-Fees and Suits Valuation Act, 1958",
+      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Karnataka 7.5% opening — highest in India among major states.' Cap not stated in source — shown as 'cap not stated'.",
+      "confidence": "medium"
+    },
+    {
+      "state": "Tamil Nadu",
+      "openingRate": 0.075,
+      "cap": 200000,
+      "act": "Tamil Nadu Court-Fees and Suits Valuation Act, 1955, Sch. I",
+      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Tamil Nadu 7.5% opening, cap ₹2 lakh.'",
+      "confidence": "medium"
+    },
+    {
+      "state": "Other states (Central schedule)",
+      "openingRate": 0.05,
+      "cap": 150000,
+      "act": "Court Fees Act, 1870, Schedule I Art. 1",
+      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Other states: 5% opening rate, cap ₹1.5 lakh.' Central Act text: Indian Kanoon (https://indiankanoon.org/doc/138097064/).",
+      "confidence": "medium"
+    }
+  ]
+}

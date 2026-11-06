@@ -1,0 +1,13 @@
+{
+  "note": "No statutory advocate fee schedule exists in India; fees are negotiated. Two anchors are shown: (1) legal-aid floor for eligible persons, (2) published 2026 market ranges (illustrative, median city district courts). User enters their own per-appearance fee; the default low end is the legal-aid floor.",
+  "legalAidFloor": {
+    "amount": 9000,
+    "unit": "per day / court appearance",
+    "source": "DSLSA Delhi Fee Schedule 2025 (https://cdnbbsr.s3waas.gov.in/s395b7a6d9a47c56ff9118bb45379fc884/uploads/2025/08/202508011960783529.pdf): minimum fee ₹6,000, advocate/counsellor ₹9,000 per day or court appearance — accessed 2026-11-06."
+  },
+  "market2026": {
+    "districtPerAppearance": { "low": 10000, "high": 50000 },
+    "metroHighCourtPerAppearance": { "low": 50000, "high": 300000 },
+    "source": "Global Law Experts, 'Civil Litigation Lawyer Fees India 2026' (https://globallawexperts.com/civil-litigation-lawyer-fees-india/), accessed 2026-11-06. Market estimates, not statutory rates. Practitioner anecdotes vary widely (district appearances commonly quoted ₹3k–₹50k); see methodology page."
+  }
+}
