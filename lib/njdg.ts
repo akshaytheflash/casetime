@@ -5,6 +5,7 @@ export interface NjdgSnapshot {
   fetchedAt: string;
   source: string;
   sourceNote: string;
+  dataGovNote?: string;
   pendency: Record<Bucket | "total", number>;
   institutedLastMonth: Record<Bucket | "total", number>;
   disposedLastMonth: Record<Bucket | "total", number>;

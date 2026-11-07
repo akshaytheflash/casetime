@@ -1,8 +1,9 @@
 {
-  "note": "Opportunity cost = daily wage x hearings x days-per-hearing. Wages are the notified rural employment-guarantee wage (VB-G RAM G Act 2025 / ex-MGNREGA), used as a transparent floor for a day lost to a court visit. Urban opportunity cost is higher; user can enter their own daily wage.",
+  "note": "Opportunity cost = daily wage x hearings x days-per-hearing. The wage is the notified rural employment-guarantee wage (VB-G RAM G Act 2025 / ex-MGNREGA), used as a transparent floor for a day lost to a court visit. Urban and informal incomes are often higher; the user can enter their own daily wage and the app labels the fallback.",
   "nationalAverage": 327.4,
   "floor": 300,
-  "source": "PIB press release (30 Jun 2026): 'national average notified wage has increased from ₹298.8 per day under MGNREGA to ₹327.4 per day under VB-G RAM G'; '₹300 interim base wage rate, ensuring that no notified wage is below ₹300 per day.' (https://www.pib.gov.in/PressReleaseDetail.aspx?PRID=2279660)",
+  "source": "PIB press release (30 Jun 2026): 'national average notified wage has increased from ₹298.8 per day under MGNREGA to ₹327.4 per day under VB-G RAM G'; '₹300 interim base wage rate, ensuring that no notified wage is below ₹300 per day.'",
+  "url": "https://www.pib.gov.in/PressReleaseDetail.aspx?PRID=2279660",
   "accessed": "2026-11-06",
   "stateWages": [
     { "state": "Haryana", "wage": 409, "source": "PIB VB-G RAM G release: 'Haryana (₹409)'." },
@@ -10,5 +11,5 @@
     { "state": "Kerala", "wage": 401, "source": "PIB VB-G RAM G release: 'Kerala (₹401)'." },
     { "state": "Karnataka", "wage": null, "source": "PIB release places Karnataka in the 'over Rs 360 up to Rs 409' band without a single published figure in this summary — shown as band, exact figure not yet sourced." }
   ],
-  "fallback": "When a state's notified wage is not in the sourced table, the estimator uses the national average (₹327.4/day) and labels it 'national average — state wage not yet sourced'."
+  "fallback": "When a State's notified wage is not in the sourced table, the estimator uses the national average and labels it 'national average — State wage not yet sourced'."
 }

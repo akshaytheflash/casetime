@@ -1,45 +1,137 @@
 {
-  "note": "Court fees are a State subject (Entry 3, State List). Parent Act: Court Fees Act, 1870 (Act 7 of 1870), Schedule I Art. 1 (ad valorem on plaint). State schedules amend it. Rates below are the max ad valorem OPENING rate with stated cap, summarised from the secondary source cited per state (accessed 2026-11-06). They are illustrative for MONEY suits only; declaratory/injunction/multiple-relief suits and later notifications differ. Verify with the court Nazir / e-filing calculator before filing.",
+  "note": "Court fees are a State subject (Entry 3, State List). The parent Act is the Court Fees Act, 1870. Each row below is the State's own schedule for an ad valorem fee on a plaint in a money suit, read from the Act text cited in that row. Money suits only: declaratory, injunction, partition, possession and multi-relief suits are valued differently. No row is inferred from a secondary calculator. A State not listed here is shown as 'not yet sourced' and no fee is added to the total.",
+  "accessed": "2026-11-06",
   "states": [
     {
       "state": "Delhi",
-      "openingRate": 0.05,
-      "cap": 200000,
-      "act": "Court Fees Act, 1870 (Delhi Amendment) Act, 1967 / state schedule",
-      "source": "NyaySevak Court Fee Calculator India 2026 (https://www.nyaysevak.com/legal-tools/court-fee-calculator), accessed 2026-11-06: 'Delhi 5% opening rate, capped at ₹2 lakh.'",
-      "confidence": "medium"
+      "act": "Court Fees Act, 1870 as amended for Delhi by the Court Fees (Delhi Amendment) Act, 2012 (Act 11 of 2012)",
+      "section": "Schedule I, Article 1; Article 3 for a s.138 NI Act complaint",
+      "url": "https://indiankanoon.org/doc/5810047/",
+      "accessed": "2026-11-06",
+      "rule": {
+        "type": "single",
+        "rows": [
+          { "max": 50000, "rate": 0.02, "min": 1000 },
+          { "max": 2000000, "rate": 0.03 },
+          { "max": null, "rate": 0.04 }
+        ]
+      },
+      "note": "Up to ₹50,000: 2% or ₹1,000, whichever is more. ₹50,001 to ₹20,00,000: 3%. Above ₹20,00,000: 4%. Article 3 applies the same scale to a complaint under s.138 of the Negotiable Instruments Act, 1881, calculated on the value of the instrument."
     },
     {
       "state": "Maharashtra",
-      "openingRate": 0.06,
-      "cap": 300000,
-      "act": "Maharashtra Court-Fees Act, 1959 (Act 36 of 1959), Sch. I Art. 1",
-      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Maharashtra 6% opening, cap ₹3 lakh.' Act text: Indian Kanoon / IGR Maharashtra (https://igrmaharashtra.gov.in/pdf/documents/Act_The-Maharashtra-Court-Fees-Act.pdf)",
-      "confidence": "medium"
+      "act": "Maharashtra Court-fees Act, 1959 (Act 36 of 1959)",
+      "section": "Schedule I, Article 1 (substituted by Maharashtra Act 18 of 2002)",
+      "url": "https://bombayhighcourt.gov.in/bhc/libweb/legislation/acts/1959.36.pdf",
+      "accessed": "2026-11-06",
+      "rule": {
+        "type": "cumulative",
+        "bands": [
+          { "max": 1000, "flat": 200 },
+          { "max": 5000, "from": 1000, "step": 100, "perStep": 12 },
+          { "max": 10000, "from": 5000, "step": 100, "perStep": 15 },
+          { "max": 20000, "from": 10000, "step": 500, "perStep": 75 },
+          { "max": 30000, "from": 20000, "step": 1000, "perStep": 100 },
+          { "max": 50000, "from": 30000, "step": 2000, "perStep": 100 },
+          { "max": 100000, "from": 50000, "step": 5000, "perStep": 150 },
+          { "max": 1100000, "from": 100000, "step": 10000, "perStep": 200 },
+          { "max": null, "from": 1100000, "step": 100000, "perStep": 1200 }
+        ],
+        "cap": 300000
+      },
+      "note": "Cumulative schedule: ₹200 up to ₹1,000, then ₹12 per ₹100 up to ₹5,000, ₹15 per ₹100 up to ₹10,000, ₹75 per ₹500 up to ₹20,000, ₹100 per ₹1,000 up to ₹30,000, ₹100 per ₹2,000 up to ₹50,000, ₹150 per ₹5,000 up to ₹1,00,000, ₹200 per ₹10,000 up to ₹11,00,000, and ₹1,200 per ₹1,00,000 above ₹11,00,000. Maximum ₹3,00,000."
     },
     {
       "state": "Karnataka",
-      "openingRate": 0.075,
-      "cap": null,
-      "act": "Karnataka Court-Fees and Suits Valuation Act, 1958",
-      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Karnataka 7.5% opening — highest in India among major states.' Cap not stated in source — shown as 'cap not stated'.",
-      "confidence": "medium"
+      "act": "Karnataka Court-fees and Suits Valuation Act, 1958 (Karnataka Act 16 of 1958)",
+      "section": "Schedule I, Article 1 (substituted by Karnataka Act 2 of 1993)",
+      "url": "https://prsindia.org/files/bills_acts/acts_states/karnataka/1958/1958Karnataka16.pdf",
+      "textUrl": "https://sooperkanoon.com/act/54536/karnataka-court-fees-and-suits-valuation-act-1958-schedule-i",
+      "accessed": "2026-11-06",
+      "rule": {
+        "type": "base_plus",
+        "rows": [
+          { "max": 15000, "base": 0, "from": 0, "rate": 0.025 },
+          { "max": 75000, "base": 375, "from": 15000, "rate": 0.075 },
+          { "max": 250000, "base": 4875, "from": 75000, "rate": 0.07 },
+          { "max": 500000, "base": 17125, "from": 250000, "rate": 0.065 },
+          { "max": 750000, "base": 33375, "from": 500000, "rate": 0.06 },
+          { "max": 1000000, "base": 48375, "from": 750000, "rate": 0.055 },
+          { "max": 1500000, "base": 62125, "from": 1000000, "rate": 0.05 },
+          { "max": 2000000, "base": 87125, "from": 1500000, "rate": 0.045 },
+          { "max": 2500000, "base": 109625, "from": 2000000, "rate": 0.04 },
+          { "max": 3000000, "base": 129625, "from": 2500000, "rate": 0.035 },
+          { "max": 4000000, "base": 147125, "from": 3000000, "rate": 0.03 },
+          { "max": 5000000, "base": 177125, "from": 4000000, "rate": 0.025 },
+          { "max": 6000000, "base": 202125, "from": 5000000, "rate": 0.02 },
+          { "max": 7000000, "base": 222125, "from": 6000000, "rate": 0.015 },
+          { "max": 8000000, "base": 237125, "from": 7000000, "rate": 0.01 },
+          { "max": null, "base": 247125, "from": 8000000, "rate": 0.01 }
+        ],
+        "cap": null
+      },
+      "note": "Progressive 16-slab schedule. The Act text we read states ₹2,47,125 + 1% above ₹80,00,000. One secondary summary says 0.5% for that final slab; we follow the Act text. No statutory maximum is stated in the schedule."
     },
     {
       "state": "Tamil Nadu",
-      "openingRate": 0.075,
-      "cap": 200000,
-      "act": "Tamil Nadu Court-Fees and Suits Valuation Act, 1955, Sch. I",
-      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Tamil Nadu 7.5% opening, cap ₹2 lakh.'",
-      "confidence": "medium"
-    },
-    {
-      "state": "Other states (Central schedule)",
-      "openingRate": 0.05,
-      "cap": 150000,
-      "act": "Court Fees Act, 1870, Schedule I Art. 1",
-      "source": "NyaySevak Court Fee Calculator India 2026, accessed 2026-11-06: 'Other states: 5% opening rate, cap ₹1.5 lakh.' Central Act text: Indian Kanoon (https://indiankanoon.org/doc/138097064/).",
-      "confidence": "medium"
+      "act": "Tamil Nadu Court-fees and Suits Valuation Act, 1955 (Tamil Nadu Act 14 of 1955)",
+      "section": "Schedule I, Article 1 (substituted by Tamil Nadu Act 6 of 2017, section 11)",
+      "url": "https://prsindia.org/files/bills_acts/acts_states/tamil-nadu/1955/1955TN14.pdf",
+      "textUrl": "https://www.legitquest.com/act/tamil-nadu-court-fees-and-suits-valuation-amendment-act-2017/41CD",
+      "accessed": "2026-11-06",
+      "rule": {
+        "type": "single",
+        "rows": [{ "max": null, "rate": 0.03 }]
+      },
+      "note": "The 2017 amendment substituted Article 1 with a flat 3% of the amount or value of the subject-matter in dispute. No statutory cap is stated in the amendment. The pre-2017 anna-based scale (about 7.5%) is no longer the operative text."
     }
-  ]
+  ],
+  "central": {
+    "state": "Central schedule (reference only)",
+    "act": "Court Fees Act, 1870 (Act 7 of 1870)",
+    "section": "Schedule I, Article 1",
+    "url": "https://indiankanoon.org/doc/138097064/",
+    "accessed": "2026-11-06",
+    "rule": {
+      "type": "cumulative",
+      "bands": [
+        { "max": 5, "flat": 0.375 },
+        { "max": 100, "from": 5, "step": 5, "perStep": 0.375 },
+        { "max": 1000, "from": 100, "step": 10, "perStep": 0.75 },
+        { "max": 5000, "from": 1000, "step": 100, "perStep": 5 },
+        { "max": 10000, "from": 5000, "step": 250, "perStep": 10 },
+        { "max": 20000, "from": 10000, "step": 500, "perStep": 15 },
+        { "max": 30000, "from": 20000, "step": 1000, "perStep": 20 },
+        { "max": 50000, "from": 30000, "step": 2000, "perStep": 20 },
+        { "max": null, "from": 50000, "step": 5000, "perStep": 25 }
+      ],
+      "cap": 3000
+    },
+    "note": "The unamended central schedule is expressed in annas (6 annas = ₹0.375) and caps the fee at ₹3,000. Most States have replaced it with their own schedule. It is shown for reference and is NOT used as a default for an unsourced State."
+  },
+  "consumer": {
+    "state": "Consumer Commission (all States)",
+    "act": "Consumer Protection (Consumer Disputes Redressal Commissions) Rules, 2020, rule 7(2), as substituted by the 2023 amendment",
+    "section": "Rule 7(2), Table",
+    "url": "https://consumerhelpline.gov.in/public/knowledgebasedetails/Consumer%20Protection%20Act%202019",
+    "accessed": "2026-11-06",
+    "rule": {
+      "type": "flat_slab",
+      "rows": [
+        { "max": 500000, "amount": 0 },
+        { "max": 1000000, "amount": 200 },
+        { "max": 2000000, "amount": 400 },
+        { "max": 5000000, "amount": 1000 },
+        { "max": 10000000, "amount": 2000 },
+        { "max": 20000000, "amount": 2500 },
+        { "max": 40000000, "amount": 3000 },
+        { "max": 60000000, "amount": 4000 },
+        { "max": 80000000, "amount": 5000 },
+        { "max": 100000000, "amount": 6000 },
+        { "max": null, "amount": 7500 }
+      ],
+      "cap": null
+    },
+    "note": "The fee follows the value of the goods or services paid as consideration, not the compensation claimed. Up to ₹5,00,000 the prescribed fee is nil. Filing is through the Consumer Commission or the e-Daakhil portal."
+  }
 }

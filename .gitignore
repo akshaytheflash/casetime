@@ -11,3 +11,4 @@ data/*.sqlite
 
 .vercel
 .env*
+*.tsbuildinfo

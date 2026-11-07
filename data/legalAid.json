@@ -1,0 +1,74 @@
+{
+  "act": "Legal Services Authorities Act, 1987",
+  "section": "Section 12 (criteria) and section 13 (entitlement)",
+  "url": "https://nalsa.gov.in/legal-aid/",
+  "textUrl": "https://ghconline.gov.in/ghclsc/legal-service-authorities-act.asp",
+  "accessed": "2026-11-06",
+  "note": "Section 12 lists who is entitled to legal services. Section 13(1) makes entitlement subject to the Authority being satisfied that the person has a prima facie case. Section 13(2) says an affidavit of income is generally sufficient. A woman or child qualifies under s.12(c) irrespective of income. The income ceiling in s.12(h) is ₹9,000 in the Act but every State has prescribed a higher amount; the NALSA table below is the national compilation.",
+  "categories": [
+    { "id": "scst", "label": "Member of a Scheduled Caste or Scheduled Tribe", "cite": "s.12(a)" },
+    { "id": "trafficking", "label": "Victim of trafficking in human beings or begar", "cite": "s.12(b)" },
+    { "id": "woman-child", "label": "Woman or child (no income test)", "cite": "s.12(c)" },
+    { "id": "disability", "label": "Person with disability", "cite": "s.12(d)" },
+    { "id": "disaster", "label": "Victim of a mass disaster, ethnic violence, caste atrocity, flood, drought, earthquake or industrial disaster", "cite": "s.12(e)" },
+    { "id": "workman", "label": "Industrial workman", "cite": "s.12(f)" },
+    { "id": "custody", "label": "Person in custody (protective home, juvenile home, psychiatric hospital or nursing home)", "cite": "s.12(g)" }
+  ],
+  "income": {
+    "Delhi": {
+      "limit": 300000,
+      "source": "NALSA, income ceiling table under s.12(h) (Delhi: ₹3,00,000), https://nalsa.gov.in/legal-aid/, accessed 2026-11-06; Delhi State Legal Services Authority legal-aid page adds senior citizens (₹4,00,000), transgender persons (₹4,00,000), acid-attack victims and persons affected by HIV.",
+      "extra": [
+        { "id": "senior", "label": "Senior citizen (60+) with annual income below ₹4,00,000", "limit": 400000, "cite": "Delhi LSA Regulations, rule 9" },
+        { "id": "transgender", "label": "Transgender person with annual income below ₹4,00,000", "limit": 400000, "cite": "Delhi LSA Regulations, rule 9" },
+        { "id": "acid", "label": "Acid-attack victim", "limit": null, "cite": "Delhi LSA Regulations, rule 9" },
+        { "id": "hiv", "label": "Person infected or affected by HIV", "limit": null, "cite": "Delhi LSA Regulations, rule 9" }
+      ]
+    },
+    "Maharashtra": {
+      "limit": 300000,
+      "source": "NALSA income ceiling table and Maharashtra State Legal Services Authority legal-aid page (₹3,00,000), https://maharashtra.nalsa.gov.in/legal-aid/, accessed 2026-11-06.",
+      "extra": []
+    },
+    "Karnataka": {
+      "limit": 300000,
+      "source": "NALSA income ceiling table (Karnataka: ₹3,00,000), https://nalsa.gov.in/legal-aid/, accessed 2026-11-06. Note: the KSLSA FAQ page still prints ₹1,00,000; confirm the current figure with the DLSA before relying on the income route.",
+      "extra": []
+    },
+    "Tamil Nadu": {
+      "limit": 300000,
+      "source": "NALSA income ceiling table and Tamil Nadu State Legal Services Authority legal-aid page (₹3,00,000), https://tamilnadu.nalsa.gov.in/legal-aid/, accessed 2026-11-06.",
+      "extra": []
+    }
+  },
+  "authorities": {
+    "Delhi": {
+      "name": "Delhi State Legal Services Authority (DSLSA)",
+      "url": "https://delhi.nalsa.gov.in/",
+      "note": "DLSA offices sit in the district court complexes. Apply at the DLSA for your district or the High Court Legal Services Committee."
+    },
+    "Maharashtra": {
+      "name": "Maharashtra State Legal Services Authority (MSLSA)",
+      "url": "https://maharashtra.nalsa.gov.in/",
+      "note": "Apply at the District Legal Services Authority for your district; legal-aid clinics also sit in the court complex."
+    },
+    "Karnataka": {
+      "name": "Karnataka State Legal Services Authority (KSLSA)",
+      "url": "https://karnataka.nalsa.gov.in/",
+      "note": "Apply at the District Legal Services Authority for your district; the DLSA is in the district court complex."
+    },
+    "Tamil Nadu": {
+      "name": "Tamil Nadu State Legal Services Authority (TNSLSA)",
+      "url": "https://tamilnadu.nalsa.gov.in/",
+      "note": "Apply at the District Legal Services Authority for your district; the DLSA is in the district court complex."
+    }
+  },
+  "fallbackAuthority": {
+    "name": "National Legal Services Authority (NALSA)",
+    "url": "https://nalsa.gov.in/legal-aid/",
+    "note": "Use the NALSA legal-aid page to find the State and District Legal Services Authority for your district."
+  },
+  "applyUrl": "https://nalsa.gov.in/legal-aid/",
+  "courtFeeNote": "Legal aid does not automatically waive the court fee. If you cannot pay it, ask the DLSA about filing as an indigent person under Order XXXIII of the Code of Civil Procedure, 1908. The Authority can also tell you whether the State has a fee-refund or exemption notification for your case.",
+  "order33Url": "https://indiankanoon.org/doc/1712496/"
+}

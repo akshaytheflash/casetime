@@ -1,0 +1,275 @@
+{
+  "fetchedAt": "2026-11-06T10:12:37.925Z",
+  "licence": "OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "source": "OpenStreetMap Overpass API",
+  "mirrors": [
+    "https://overpass-api.de/api/interpreter"
+  ],
+  "note": "Cached snapshot of amenity=courthouse around four city centres. Not exhaustive: OSM coverage varies. Coordinates are copied verbatim from OSM; no location is inferred. Re-run scripts/fetch-osm.mjs to refresh.",
+  "cities": [
+    {
+      "city": "Delhi",
+      "state": "Delhi",
+      "lat": 28.6129,
+      "lon": 77.2315
+    },
+    {
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "lat": 18.9388,
+      "lon": 72.8354
+    },
+    {
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "lat": 12.9716,
+      "lon": 77.5946
+    },
+    {
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "lat": 13.0827,
+      "lon": 80.2707
+    }
+  ],
+  "places": [
+    {
+      "id": "node/3872372431",
+      "name": "Arbitration Center Bengaluru",
+      "lat": 12.98326,
+      "lon": 77.585967,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": "Karnatak Judiciary",
+        "addr:street": "Race Course Road"
+      }
+    },
+    {
+      "id": "node/11064985066",
+      "name": "Bangalore Mediation Centre",
+      "lat": 12.954371,
+      "lon": 77.590505,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "relation/5284318",
+      "name": "Civil Court",
+      "lat": 12.972974,
+      "lon": 77.583504,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "relation",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "node/11402803529",
+      "name": "Commercial Court Complex",
+      "lat": 12.980712,
+      "lon": 77.596295,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "node/11402793867",
+      "name": "Debts Recovery Tribunal 1 and 2",
+      "lat": 12.980734,
+      "lon": 77.596251,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "relation/20068886",
+      "name": "District Magistrate Courts",
+      "lat": 12.968698,
+      "lon": 77.588216,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "relation",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "node/2600851625",
+      "name": "Family & Labour Courts",
+      "lat": 12.954627,
+      "lon": 77.590549,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": "Government of Karnataka",
+        "addr:street": "H. Siddiah Road"
+      }
+    },
+    {
+      "id": "way/208686727",
+      "name": "High Court of Karnataka",
+      "lat": 12.978047,
+      "lon": 77.592541,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "way",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": "Karnataka Judiciary",
+        "addr:street": "Dr B R Ambedkar Veedhi"
+      }
+    },
+    {
+      "id": "relation/446900",
+      "name": "Karnataka High Court",
+      "lat": 12.977898,
+      "lon": 77.592626,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "relation",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": "Ambedkar Veedhi"
+      }
+    },
+    {
+      "id": "node/2600852209",
+      "name": "Karnataka State Legal Services Authority",
+      "lat": 12.954779,
+      "lon": 77.590601,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": "H. Siddiah Road"
+      }
+    },
+    {
+      "id": "way/208693355",
+      "name": "Mayo Hall",
+      "lat": 12.974089,
+      "lon": 77.610711,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "way",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "way/52058540",
+      "name": "Old KGID Building",
+      "lat": 12.979754,
+      "lon": 77.594801,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "way",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "way/208693359",
+      "name": "Unnamed courthouse",
+      "lat": 12.973997,
+      "lon": 77.610587,
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "osmType": "way",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "relation/14748258",
+      "name": "Chief Metropolitan Magistrate Court",
+      "lat": 13.07307,
+      "lon": 80.263378,
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "osmType": "relation",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "way/34326333",
+      "name": "Madras High Court",
+      "lat": 13.086977,
+      "lon": 80.287629,
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "osmType": "way",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "way/1089794582",
+      "name": "Metropolitan Magistrate Court",
+      "lat": 13.092134,
+      "lon": 80.291215,
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "osmType": "way",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": null
+      }
+    },
+    {
+      "id": "node/11958767996",
+      "name": "National Company Law Tribunal",
+      "lat": 13.0944,
+      "lon": 80.291763,
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "osmType": "node",
+      "tags": {
+        "amenity": "courthouse",
+        "operator": null,
+        "addr:street": "Rajaji Salai"
+      }
+    }
+  ]
+}

@@ -4,8 +4,8 @@ export const WORKAROUNDS = [
     title: "1. Mediation (Section 89 CPC)",
     when: "A negotiated settlement is acceptable and both sides will engage.",
     how: "After filing, the court can refer parties to mediation under Section 89 CPC. The mediator facilitates; the settlement, if signed, becomes a decree. Court-fee refund: where the court refers parties to ADR, Section 16 of the Court Fees Act entitles the plaintiff to a certificate for refund of the fee paid.",
-    costTime: "Typically weeks to a few months, versus years in court. A 75% refund of court fee is commonly cited for Lok Adalat / mediation settlements (state practice varies — confirm with the court).",
-    source: "Court Fees Act, 1870, s.16 (Indian Kanoon, https://indiankanoon.org/doc/138097064/); ADR fee-refund summary: NyaySevak (https://www.nyaysevak.com/legal-tools/court-fee-calculator), accessed 2026-11-06.",
+    costTime: "Typically weeks to a few months, versus years in court. s.16 itself does not give a percentage: it says the plaintiff is entitled to a certificate to recover “the full amount of the fee paid”. Read the section text below; confirm the practice with the court.",
+    source: "Court Fees Act, 1870, s.16 (verbatim on Indian Kanoon, https://indiankanoon.org/doc/138097064/), accessed 2026-11-06. The Act refers to s.89 CPC modes of settlement and sets no percentage; no secondary fee-calculator is relied on.",
   },
   {
     id: "lok-adalat",

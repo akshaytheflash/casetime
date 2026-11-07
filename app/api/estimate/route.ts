@@ -1,18 +1,80 @@
 import type { EstimateInput } from "../../../lib/types";
-import { estimate, costVsTimePoints } from "../../../lib/estimator";
+import { estimate, type Cohort } from "../../../lib/estimator";
 import { saveEstimate, recentEstimates } from "../../../lib/db";
-import { eciSearch, eciConfigured } from "../../../lib/eci";
-import { bharatcodeExplain, templateExplainer } from "../../../lib/bharatcode";
+import { eciSearch, eciConfigured, eciDisposedCohort, cohortQuery } from "../../../lib/eci";
 
 export const dynamic = "force-dynamic";
 
+const DEFAULTS = {
+  caseType: "money" as const,
+  state: "Delhi",
+  courtLevel: "district" as const,
+  suitValue: 500000,
+  advocatePerAppearance: 9000,
+  dailyWage: 327.4,
+  daysPerHearing: 1,
+  hearingsPerMonth: 1,
+  repoRate: 5.5,
+  annualIncome: null as number | null,
+  legalAidCategories: [] as string[],
+};
+
+function clamp(n: number, lo: number, hi: number): number {
+  if (!Number.isFinite(n)) return lo;
+  return Math.min(hi, Math.max(lo, n));
+}
+
 export async function POST(req: Request) {
-  const input = (await req.json()) as EstimateInput;
-  if (!input?.caseType || !input?.state || !(input.suitValue > 0)) {
-    return Response.json({ error: "caseType, state and suitValue>0 are required" }, { status: 400 });
+  let body: Record<string, unknown>;
+  try {
+    body = (await req.json()) as Record<string, unknown>;
+  } catch {
+    return Response.json({ error: "Send a JSON body." }, { status: 400 });
   }
-  const result = estimate(input);
-  const scatter = costVsTimePoints(input);
+
+  const suitValue = Number(body.suitValue ?? DEFAULTS.suitValue);
+  if (!Number.isFinite(suitValue) || suitValue <= 0) {
+    return Response.json({ error: "suitValue must be a number greater than zero." }, { status: 400 });
+  }
+  if (typeof body.caseType !== "string" || typeof body.state !== "string") {
+    return Response.json({ error: "caseType and state are required." }, { status: 400 });
+  }
+
+  const rawIncome = body.annualIncome;
+  const annualIncome =
+    rawIncome === null || rawIncome === undefined || rawIncome === ""
+      ? null
+      : clamp(Number(rawIncome), 0, 1000000000);
+
+  const input: EstimateInput = {
+    caseType: body.caseType as EstimateInput["caseType"],
+    state: body.state,
+    courtLevel: (body.courtLevel === "high" ? "high" : "district") as EstimateInput["courtLevel"],
+    suitValue: clamp(suitValue, 1, 10000000000),
+    advocatePerAppearance: clamp(Number(body.advocatePerAppearance ?? DEFAULTS.advocatePerAppearance), 0, 10000000),
+    dailyWage: clamp(Number(body.dailyWage ?? DEFAULTS.dailyWage), 0, 1000000),
+    daysPerHearing: clamp(Number(body.daysPerHearing ?? DEFAULTS.daysPerHearing), 1, 10),
+    hearingsPerMonth: clamp(Number(body.hearingsPerMonth ?? DEFAULTS.hearingsPerMonth), 0.1, 4),
+    repoRate: clamp(Number(body.repoRate ?? DEFAULTS.repoRate), 0, 30),
+    annualIncome,
+    legalAidCategories: Array.isArray(body.legalAidCategories)
+      ? (body.legalAidCategories as unknown[]).filter((x): x is string => typeof x === "string")
+      : [],
+  };
+
+  // Cohort mode is optional and only runs with a partner key. It is bounded so a
+  // slow third-party call cannot hold the estimate hostage; on timeout the app
+  // falls back to the labelled queue-based lower bound.
+  let cohort: Cohort | null = null;
+  if (eciConfigured()) {
+    cohort = await Promise.race<Cohort | null>([
+      eciDisposedCohort(cohortQuery(input.state, input.caseType)).catch(() => null),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 6000)),
+    ]);
+  }
+
+  const result = estimate(input, cohort);
+
   try {
     saveEstimate({
       case_type: input.caseType,
@@ -24,20 +86,15 @@ export async function POST(req: Request) {
       result_json: JSON.stringify(result),
     });
   } catch {
-    // DB best-effort (e.g. /api/health checks); estimate still returned
+    // DB is best-effort (e.g. a read-only local FS); the estimate still returns.
   }
-  let explainer: { text: string; via: "llm" | "fallback" } = { text: "", via: "fallback" };
-  const prompt = `Explain this estimate in plain language for a first-time litigant. Do not give legal advice.\n${JSON.stringify(
-    { caseType: input.caseType, state: input.state, courtLevel: input.courtLevel, suitValue: input.suitValue, total: Math.round(result.total), queueClearYears: Number(result.queueClearYears.toFixed(2)), pool: result.pool },
-    null, 2
-  )}`;
-  try {
-    const r = await bharatcodeExplain(prompt);
-    explainer = r.text ? r : { text: templateExplainer(prompt), via: "fallback" };
-  } catch {
-    explainer = { text: templateExplainer(prompt), via: "fallback" };
-  }
-  return Response.json({ input, result, scatter, explainer });
+
+  return Response.json({
+    input,
+    result,
+    cohort,
+    mode: eciConfigured() ? "partner-key-present" : "aggregate-statistics",
+  });
 }
 
 export async function GET(req: Request) {
@@ -47,7 +104,8 @@ export async function GET(req: Request) {
       return Response.json({
         mode: "aggregate-statistics",
         banner: "Per-case API not configured — showing NJDG aggregates",
-        message: "Set ECI_KEY (eci_live_...) in .env to enable per-case lookup. CNRs come from search results only; no cases are invented.",
+        message:
+          "Set ECI_KEY (eci_live_...) in .env to enable per-case lookup. CNRs come from search results only; no cases are invented.",
       });
     }
     const r = await eciSearch(q);
