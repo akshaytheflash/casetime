@@ -17,6 +17,7 @@ import AlternativesSection from "../components/AlternativesSection";
 import PlacesSection from "../components/PlacesSection";
 import NoticePanel from "../components/NoticePanel";
 import Statement from "../components/Statement";
+import FloatingStatement from "../components/FloatingStatement";
 
 const DEFAULTS: EstimateInput = {
   caseType: "money",
@@ -287,6 +288,12 @@ export default function Home() {
           </div>
         </footer>
       </div>
+
+      <FloatingStatement
+        result={payload?.result ?? null}
+        dirty={dirty}
+        onRebuild={() => void runEstimate(input, { scroll: false })}
+      />
 
       {payload && (
         <Statement
