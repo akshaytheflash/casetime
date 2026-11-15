@@ -49,8 +49,7 @@ Malayalam**. Urdu is right-to-left; the others are left-to-right.
 1. You enter **case type + state + court level + suit value + your advocate rate + your daily wage**.
 2. `/api/estimate` returns: **time** (queue-clearance horizon + pending-pool P50/P75/P90),
    **cost** (court fee + advocate + opportunity cost, each with a source),
-   **3 workarounds** (mediation · Lok Adalat · commercial pre-institution mediation s.12A),
-   a **cost-vs-suit-value scatter**, and a plain-language explainer built from the same numbers.
+   **3 workarounds** (mediation · Lok Adalat · commercial pre-institution mediation s.12A).
 
 ### Time model (honest aggregates — never per-case durations)
 
@@ -73,7 +72,6 @@ Court level: snapshot covers District Courts (NJDG); High Court shows the Distri
 | Court fees (4 states + Central) | Court Fees Act, 1870 + state schedules via cited summaries (see `/sources`) | 2026-11-06 |
 | Wages (opportunity floor) | PIB / VB-G RAM G 2025 (avg ₹327.4, floor ₹300) | 2026-11-06 |
 | Advocate | DSLSA legal-aid floor ₹9,000 + 2026 market ranges | 2026-11-06 |
-| Plain-language explainer | Deterministic template over the estimate; no model in the decision flow | local |
 | Per-case (optional) | eCourtsIndia partner API (THIRD-PARTY, paid, key-gated) | — |
 
 Full table with URLs: the `/sources` page. Rule of the house: **if a fee isn't sourced,
@@ -107,7 +105,7 @@ DATA_GOV_API_KEY     # optional, for data.gov.in dataset lookups
 
 - `GET /api/njdg` — live NJDG aggregates (1h SQLite cache) + dated-snapshot fallback.
 - `POST /api/estimate` — `{caseType, state, courtLevel, suitValue, advocatePerAppearance,
-  dailyWage, daysPerHearing, hearingsPerMonth}` → `{input, result, scatter, explainer}`.
+  dailyWage, daysPerHearing, hearingsPerMonth}` → `{input, result, cohort, mode}`.
 - `GET /api/estimate?q=…` — per-case search when `ECI_KEY` set; otherwise aggregate-mode notice.
 - `GET /api/health` — `{ok, eci, mode}`.
 
@@ -115,8 +113,7 @@ DATA_GOV_API_KEY     # optional, for data.gov.in dataset lookups
 
 - **NJDG**: `GET https://njdg.ecourts.gov.in/` → 200, 199KB HTML; cards + `fetchYearData`
   band string parsed (Civil 1,12,52,654; disposed 3,40,163/mo). ✅
-- **Model endpoint**: `GET /models` → 200, `qwen-3.8-27b` live, 262k ctx. ✅
-  `POST /chat/completions` → **503 model_unavailable** (busy). The estimate and the explainer do not depend on it, so the output is unaffected. ✅
+- **Model endpoint**: not used by the estimator. `GET /models` → 200, `qwen-3.8-27b` live; `POST /chat/completions` returns 503 when busy. The estimate does not call a model.
 - **eCourtsIndia partner**: no key → 401 `INVALID_TOKEN` as designed; app banner shows
   “Per-case API not configured — showing NJDG aggregates”. ✅
 - **data.gov.in**: catalog search returns JS HTML (no JSON) — linked, not embedded. ✅ (documented)
@@ -125,8 +122,7 @@ DATA_GOV_API_KEY     # optional, for data.gov.in dataset lookups
 
 1. Home page: notice the **estimate-not-advice** framing + backlog card (5.21 crore pending).
 2. Pick **Property, Delhi, ₹5,00,000, advocate ₹5,000, wage ₹327** → Estimate.
-   Point at: 2.76-yr queue horizon, P50/P75/P90, ₹ breakdown with per-rupee sources,
-   scatter, and the 503-fallback explainer line.
+   Point at: 2.76-yr queue horizon, P50/P75/P90, and the ₹ breakdown with per-rupee sources.
 3. Open **/methodology** (Little's Law + limits) and **/sources** (fee table + access dates).
 4. Show the 3 workaround cards (mediation → Lok Adalat → s.12A for commercial ≥₹3L).
 5. Mention: no key = aggregate mode by design; `ECI_KEY` enables per-case lookup
