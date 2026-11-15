@@ -2,6 +2,7 @@
 
 Court time vs real litigation cost estimator with workarounds — built for the
 **Code for a Billion (Code for India)** hackathon, **Timely Justice / Legal Backlog** impact area.
+Built in [AgentFoundry](https://agentfoundry.me) (AF), the official IDE for Code for a Billion.
 
 > **CaseTime is an estimate, not legal advice.** Time comes from NJDG pendency
 > aggregates (Little's Law + pending-pool age bands); costs from cited court-fee /
@@ -17,6 +18,31 @@ npm run dev             # http://localhost:3000
 ```
 
 SQLite (`casetime.db`) auto-creates on first estimate. No build step needed for dev.
+
+## Languages
+
+CaseTime ships with English plus the ten most widely spoken Indian languages:
+**Hindi, Bengali, Marathi, Telugu, Tamil, Gujarati, Urdu, Kannada, Odia and
+Malayalam**. Urdu is right-to-left; the others are left-to-right.
+
+- **Where the strings live:** `lib/i18n/messages/en.ts` is the source of truth.
+  Every other locale is a `Partial` dictionary in the same folder and falls back
+  to English for any key it has not translated yet.
+- **The switcher:** the language picker in the masthead writes the
+  `i18n_locale` cookie (one year, `samesite=lax`) and `localStorage`, updates
+  `<html lang dir>` immediately, then calls `router.refresh()` so server
+  components re-render with the new locale. There is no account and no runtime
+  translation API.
+- **Adding a key:** add the English copy to `en.ts` under a namespaced key
+  (for example `docket.caseType`), render it with `t("docket.caseType")` from
+  `useI18n()` in a client component or `getI18n()` in a server component, then
+  run `node scripts/check-i18n.mjs` to see which locales still need a
+  translation.
+- **Official documents stay in English:** the printable cost statement
+  (`components/Statement.tsx`) and the generated legal notice
+  (`lib/notice.ts`) are legal artifacts. Their containers carry `lang="en"` and
+  the UI shows a translated `doc.englishOnly` note. Statute names, section
+  citations, Act names, URLs and source names are never translated.
 
 ## How it works
 

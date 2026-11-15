@@ -1,17 +1,47 @@
-import type { EstimateResult } from "../lib/estimator";
-import { inr } from "../lib/format";
-import { LEGAL_AID_META } from "../lib/legalAid";
+"use client";
 
-export default function LegalAidPanel({ result }: { result: EstimateResult }) {
+import type { EstimateResult } from "../lib/estimator";
+import type { MessageKey } from "../lib/i18n/messages/en";
+import { inr } from "../lib/format";
+import { AID_CATEGORY_KEY, LEGAL_AID_META } from "../lib/legalAid";
+import { useI18n } from "./I18nProvider";
+
+const AUTHORITY_NOTE_KEY: Record<string, MessageKey> = {
+  "Delhi State Legal Services Authority (DSLSA)": "aid.authority.delhi",
+  "Maharashtra State Legal Services Authority (MSLSA)": "aid.authority.maharashtra",
+  "Karnataka State Legal Services Authority (KSLSA)": "aid.authority.karnataka",
+  "Tamil Nadu State Legal Services Authority (TNSLSA)": "aid.authority.tamilNadu",
+  "National Legal Services Authority (NALSA)": "aid.authority.nalsa",
+};
+
+export default function LegalAidPanel({
+  result,
+  state,
+}: {
+  result: EstimateResult;
+  state?: string;
+}) {
+  const { t } = useI18n();
   const aid = result.legalAid;
   const eligible = aid.eligible;
+
+  const note = eligible
+    ? t("aid.note.eligible")
+    : aid.status === "not-eligible"
+      ? t("aid.note.notEligible", {
+          state: state ?? "",
+          limit: aid.incomeLimit !== null ? inr(aid.incomeLimit) : "",
+        })
+      : t("aid.note.unknown");
+
+  const authorityNoteKey = AUTHORITY_NOTE_KEY[aid.authority.name];
 
   return (
     <section className="aid-section" aria-labelledby="aid-heading">
       <div className="shell aid-grid">
         <div>
           <p className="hero-kicker" style={{ marginBottom: 10 }}>
-            Section 12, Legal Services Authorities Act, 1987
+            {t("aid.kicker")}
           </p>
           <h2
             className={`aid-status ${eligible ? "eligible" : ""}`}
@@ -19,25 +49,33 @@ export default function LegalAidPanel({ result }: { result: EstimateResult }) {
             aria-live="polite"
           >
             {eligible
-              ? "You may qualify for free legal aid."
+              ? t("aid.eligible")
               : aid.status === "not-eligible"
-                ? "Not eligible on the income you entered."
-                : "Legal-aid eligibility not assessed."}
+                ? t("aid.notEligible")
+                : t("aid.unknown")}
           </h2>
           <p className="section-note" style={{ maxWidth: "56ch" }}>
-            {aid.note}
+            {note}
           </p>
 
           {eligible && (
             <>
               <p className="aid-save">
-                The advocate line drops by <strong>{inr(aid.advocateSaving)}</strong>.
+                {t("aid.saving", { amount: inr(aid.advocateSaving) })}
               </p>
               {aid.matched.length > 0 && (
                 <ul className="aid-list">
                   {aid.matched.map((m) => (
                     <li key={m.id}>
-                      {m.label} <span className="cite">{m.cite}</span>
+                      {m.id === "income"
+                        ? t("aid.matched.income", {
+                            state: state ?? "",
+                            amount: inr(aid.incomeLimit ?? 0),
+                          })
+                        : AID_CATEGORY_KEY[m.id]
+                          ? t(AID_CATEGORY_KEY[m.id])
+                          : m.label}{" "}
+                      <span className="cite">{m.cite}</span>
                     </li>
                   ))}
                 </ul>
@@ -47,18 +85,26 @@ export default function LegalAidPanel({ result }: { result: EstimateResult }) {
 
           {!eligible && aid.status !== "not-eligible" && (
             <ul className="aid-list">
-              <li>Woman or child <span className="cite">s.12(c)</span> — no income test.</li>
-              <li>Member of a Scheduled Caste or Scheduled Tribe <span className="cite">s.12(a)</span>.</li>
-              <li>Person with disability <span className="cite">s.12(d)</span>.</li>
-              <li>Industrial workman <span className="cite">s.12(f)</span>.</li>
+              <li>
+                {t("aid.list.woman")} <span className="cite">s.12(c)</span>.
+              </li>
+              <li>
+                {t("aid.list.scst")} <span className="cite">s.12(a)</span>.
+              </li>
+              <li>
+                {t("aid.list.disability")} <span className="cite">s.12(d)</span>.
+              </li>
+              <li>
+                {t("aid.list.workman")} <span className="cite">s.12(f)</span>.
+              </li>
             </ul>
           )}
 
           <div className="callout callout-sage" style={{ marginTop: 16 }}>
             <p>
-              <strong>Court fee is separate.</strong> {aid.courtFeeNote}{" "}
+              <strong>{t("aid.courtFeeTitle")}</strong> {t("aid.courtFeeNote")}{" "}
               <a href={aid.order33Url} target="_blank" rel="noreferrer">
-                Order XXXIII CPC
+                {t("aid.order33")}
               </a>
               .
             </p>
@@ -66,37 +112,32 @@ export default function LegalAidPanel({ result }: { result: EstimateResult }) {
 
           <p className="section-note" style={{ marginTop: 12 }}>
             {aid.incomeLimit !== null
-              ? `The ${result.legalAid.incomeLimitSource ? "State" : ""} income ceiling used here is ${inr(
-                  aid.incomeLimit
-                )} per year. ${aid.incomeLimitSource}`
-              : "No income ceiling is stored for this State. Ask the DLSA for the current figure."}
+              ? t("aid.incomeCeilingWithSource", {
+                  amount: inr(aid.incomeLimit),
+                  source: aid.incomeLimitSource,
+                })
+              : t("aid.noIncome")}
           </p>
         </div>
 
         <div className="aid-card" style={{ borderTopColor: "var(--sage-ink)" }}>
-          <h3 className="h3">Where to apply</h3>
+          <h3 className="h3">{t("aid.whereApply")}</h3>
           <p>{aid.authority.name}</p>
-          <p>{aid.authority.note}</p>
+          <p>{authorityNoteKey ? t(authorityNoteKey) : aid.authority.note}</p>
           <div className="aid-actions">
             <a className="btn" href={aid.authority.url} target="_blank" rel="noreferrer">
-              Find your DLSA
+              {t("aid.findDlsa")}
             </a>
-            <a
-              className="btn btn-secondary"
-              href={aid.applyUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Apply through NALSA
+            <a className="btn btn-secondary" href={aid.applyUrl} target="_blank" rel="noreferrer">
+              {t("aid.applyNalsa")}
             </a>
           </div>
           <p className="section-note" style={{ marginTop: 12 }}>
-            Carry proof of the category and, if income is the route, an affidavit. The Authority
-            decides whether there is a prima facie case. {LEGAL_AID_META.note}
+            {t("aid.carry", { note: t("aid.legalAidMetaNote") })}
           </p>
           <p className="section-note" style={{ marginTop: 8 }}>
             <a href={LEGAL_AID_META.textUrl} target="_blank" rel="noreferrer">
-              Read the Act text
+              {t("common.readAct")}
             </a>
           </p>
         </div>

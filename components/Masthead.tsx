@@ -1,4 +1,8 @@
+"use client";
+
 import { num } from "../lib/format";
+import { useI18n } from "./I18nProvider";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export interface NjdgStatus {
   total: number;
@@ -15,11 +19,12 @@ export default function Masthead({
   njdg?: NjdgStatus | null;
   eci?: boolean;
 }) {
+  const { t } = useI18n();
   const sourceLabel = njdg
     ? njdg.source === "live" || njdg.source === "cache"
-      ? "NJDG live"
-      : "NJDG snapshot"
-    : "NJDG snapshot";
+      ? t("masthead.njdgLive")
+      : t("masthead.njdgSnapshot")
+    : t("masthead.njdgSnapshot");
 
   return (
     <>
@@ -28,33 +33,27 @@ export default function Masthead({
           <a className="wordmark" href="/">
             Case<span>Time</span>
           </a>
-          <p className="masthead-line">A cost statement for the queue</p>
-          <nav className="masthead-nav" aria-label="Primary">
-            <a href="/methodology">Methodology</a>
-            <a href="/sources">Sources</a>
-            <span>Data: 6 Nov 2026</span>
+          <p className="masthead-line">{t("masthead.tagline")}</p>
+          <nav className="masthead-nav" aria-label={t("masthead.primaryNav")}>
+            <a href="/methodology">{t("common.methodology")}</a>
+            <a href="/sources">{t("common.sources")}</a>
+            <span>{t("masthead.dataDate")}</span>
+            <LanguageSwitcher />
           </nav>
         </div>
       </header>
       <div className="mode-bar">
         <div className="shell">
           <span>
-            {eci ? (
-              <>
-                <strong>Partner mode.</strong> Per-case eCourtsIndia lookup is configured. Estimates
-                still show the aggregate fallback.
-              </>
-            ) : (
-              <>
-                <strong>Aggregate mode.</strong> Per-case eCourtsIndia lookup is not configured;
-                estimates use NJDG aggregates only.
-              </>
-            )}
+            {eci ? t("masthead.mode.partner") : t("masthead.mode.aggregate")}
           </span>
           <span>
             {njdg
-              ? `${sourceLabel}: ${num(njdg.total)} pending`
-              : "NJDG dated snapshot: 5,21,19,188 pending"}
+              ? t("masthead.pending", {
+                  source: sourceLabel,
+                  count: num(njdg.total),
+                })
+              : t("masthead.pendingFallback")}
           </span>
         </div>
       </div>

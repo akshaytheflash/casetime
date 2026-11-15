@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import type { GeneratedNotice } from "../lib/notice";
+import { useI18n } from "./I18nProvider";
 
 export default function NoticePanel({ notice }: { notice: GeneratedNotice }) {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
 
@@ -53,62 +55,62 @@ export default function NoticePanel({ notice }: { notice: GeneratedNotice }) {
       <div className="section-head">
         <div>
           <h2 className="h2" id="notice-heading">
-            The notice you can send
+            {t("notice.heading")}
           </h2>
-          <p className="section-note">
-            A generated draft with bracketed fields. It is a starting point for a DLSA panel lawyer,
-            not a filing-ready document.
-          </p>
+          <p className="section-note">{t("notice.intro")}</p>
         </div>
       </div>
 
       <div className="notice-grid">
         <div>
-          <h3 className="h3" style={{ marginBottom: 6 }}>
+          <h3 className="h3" style={{ marginBottom: 6 }} lang="en">
             {notice.title}
           </h3>
           <p className="notice-basis">
             {notice.basis}{" "}
             <a href={notice.basisUrl} target="_blank" rel="noreferrer">
-              Read the provision
+              {t("notice.readProvision")}
             </a>
           </p>
-          <pre className="notice-pre" tabIndex={0} aria-label="Draft notice text">
+          <p className="section-note">{t("doc.englishOnly")}</p>
+          <pre
+            className="notice-pre"
+            tabIndex={0}
+            aria-label={t("notice.draftAria")}
+            lang="en"
+            dir="ltr"
+          >
             {notice.body}
           </pre>
           <div className="notice-actions">
             <button className="btn btn-small" type="button" onClick={copy}>
-              {copied ? "Copied" : "Copy notice"}
+              {copied ? t("notice.copied") : t("notice.copy")}
             </button>
             <button className="btn btn-secondary btn-small" type="button" onClick={download}>
-              Download .txt
+              {t("notice.download")}
             </button>
             {copyError && (
               <span className="section-note" style={{ color: "var(--cost-deep)" }} role="alert">
-                Copy failed. Select the text and copy it manually.
+                {t("notice.copyFailed")}
               </span>
             )}
           </div>
           <p className="section-note" style={{ marginTop: 10 }}>
-            Replace every bracketed field. Do not send a notice with a placeholder left in it. Keep
-            proof of dispatch and a copy.
+            {t("notice.replace")}
           </p>
         </div>
 
         <aside>
           <h3 className="h3" style={{ marginBottom: 8 }}>
-            Before you send it
+            {t("notice.before")}
           </h3>
-          <ol className="notice-steps">
+          <ol className="notice-steps" lang="en" dir="ltr">
             {notice.steps.map((s) => (
               <li key={s}>{s}</li>
             ))}
           </ol>
           <div className="callout callout-sage" style={{ marginTop: 14 }}>
-            <p>
-              A notice is a legal step with consequences. Have a DLSA panel lawyer read it, especially
-              the limitation date and the demand.
-            </p>
+            <p>{t("notice.callout")}</p>
           </div>
         </aside>
       </div>

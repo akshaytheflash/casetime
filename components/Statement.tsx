@@ -1,9 +1,12 @@
+"use client";
+
 import type { EstimateInput } from "../lib/types";
 import { CASE_TYPE_LABEL } from "../lib/types";
 import type { EstimateResult } from "../lib/estimator";
 import { inr, months, pct, yearsMonths } from "../lib/format";
 import { placesForState } from "../lib/places";
 import type { GeneratedNotice } from "../lib/notice";
+import { useI18n } from "./I18nProvider";
 
 type Places = ReturnType<typeof placesForState>;
 
@@ -18,6 +21,7 @@ export default function Statement({
   places: Places;
   notice: GeneratedNotice;
 }) {
+  const { t } = useI18n();
   const date = new Date(result.generatedAt).toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
@@ -37,18 +41,21 @@ export default function Statement({
         <div className="statement-toolbar">
           <div>
             <h2 className="h2" style={{ fontSize: "1.35rem" }}>
-              Case cost statement
+              {t("statement.toolbarTitle")}
             </h2>
             <p className="section-note" style={{ marginTop: 2 }}>
-              One page, A4. Print or save as PDF.
+              {t("statement.printNote")}
+            </p>
+            <p className="section-note" style={{ marginTop: 2 }}>
+              {t("doc.englishOnly")}
             </p>
           </div>
           <button className="btn" type="button" onClick={() => window.print()}>
-            Print / save as PDF
+            {t("statement.print")}
           </button>
         </div>
 
-        <div className="statement-sheet">
+        <div className="statement-sheet" lang="en" dir="ltr">
           <div className="statement-head">
             <h1 className="statement-title" id="statement-title">
               Case cost statement

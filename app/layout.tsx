@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { I18nProvider } from "@/components/I18nProvider";
+import { getI18n } from "@/lib/i18n/server";
+import { INDIC_FONTS_HREF } from "@/lib/i18n/fonts";
 
 const newsreader = localFont({
   src: [
@@ -24,9 +27,17 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const { locale, dir } = getI18n();
   return (
-    <html lang="en" className={`${newsreader.variable} ${interTight.variable}`}>
-      <body>{children}</body>
+    <html lang={locale} dir={dir} className={`${newsreader.variable} ${interTight.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href={INDIC_FONTS_HREF} rel="stylesheet" />
+      </head>
+      <body>
+        <I18nProvider initialLocale={locale}>{children}</I18nProvider>
+      </body>
     </html>
   );
 }

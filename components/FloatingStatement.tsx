@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { EstimateResult } from "../lib/estimator";
 import { inr, inrShort, months } from "../lib/format";
+import { useI18n } from "./I18nProvider";
 
 /**
  * The running total, parked over the page while you work.
@@ -21,6 +22,7 @@ export default function FloatingStatement({
   dirty: boolean;
   onRebuild: () => void;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [shown, setShown] = useState(false);
 
@@ -44,7 +46,7 @@ export default function FloatingStatement({
   return (
     <aside
       className={`float-tape${open ? " is-open" : ""}${dirty ? " is-dirty" : ""}`}
-      aria-label="Running total"
+      aria-label={t("float.aria")}
     >
       <button
         type="button"
@@ -53,7 +55,7 @@ export default function FloatingStatement({
         onClick={() => setOpen((v) => !v)}
       >
         <span className="tape-label">
-          {dirty ? "Total changes — rebuild to update" : "Total planning cost"}
+          {dirty ? t("float.dirty") : t("float.total")}
         </span>
         <span className="tape-total">{inrShort(result.total)}</span>
         <span className="tape-chevron" aria-hidden="true">
@@ -64,36 +66,39 @@ export default function FloatingStatement({
       <div className="tape-body">
         <dl className="tape-lines">
           <div>
-            <dt>Court fee</dt>
-            <dd>{result.courtFee === null ? "Not yet sourced" : inr(result.courtFee)}</dd>
+            <dt>{t("float.courtFee")}</dt>
+            <dd>{result.courtFee === null ? t("common.notYetSourced") : inr(result.courtFee)}</dd>
           </div>
           <div>
-            <dt>Advocate</dt>
-            <dd>{result.advocateWaived ? "₹0 · legal aid" : inr(result.advocateTotal)}</dd>
+            <dt>{t("float.advocate")}</dt>
+            <dd>{result.advocateWaived ? t("float.waived") : inr(result.advocateTotal)}</dd>
           </div>
           <div>
-            <dt>Lost wages</dt>
+            <dt>{t("float.wages")}</dt>
             <dd>{inr(result.opportunityCost)}</dd>
           </div>
           <div>
-            <dt>Cost of money</dt>
+            <dt>{t("float.money")}</dt>
             <dd>{inr(result.interest)}</dd>
           </div>
           <div className="tape-sub">
-            <dt>Litigation cost</dt>
+            <dt>{t("float.litigation")}</dt>
             <dd>{inr(result.litigationCost)}</dd>
           </div>
           <div className="tape-sub">
-            <dt>Cost of waiting</dt>
+            <dt>{t("float.waiting")}</dt>
             <dd>{inr(result.delayCost)}</dd>
           </div>
         </dl>
         <p className="tape-foot">
-          {months(result.monthsUsed)} in the queue · {inr(result.perMonth)} a month
+          {t("float.foot", {
+            months: months(result.monthsUsed),
+            perMonth: inr(result.perMonth),
+          })}
         </p>
         {dirty && (
           <button type="button" className="tape-rebuild" onClick={onRebuild}>
-            Rebuild with your new inputs
+            {t("float.rebuild")}
           </button>
         )}
       </div>

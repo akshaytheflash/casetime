@@ -1,18 +1,22 @@
+"use client";
+
 import type { EstimateInput } from "../lib/types";
-import { CASE_TYPE_LABEL } from "../lib/types";
+import { CASE_TYPE_LABEL_KEY } from "../lib/types";
 import type { EstimateResult } from "../lib/estimator";
+import type { MessageKey } from "../lib/i18n/messages/en";
 import { inrShort, months, num } from "../lib/format";
+import { useI18n } from "./I18nProvider";
 import TimeCostBand from "./TimeCostBand";
 import type { NjdgStatus } from "./Masthead";
 
-const HEADLINE_LABEL: Record<EstimateInput["caseType"], string> = {
-  family: "family dispute",
-  property: "property dispute",
-  money: "money claim",
-  commercial: "commercial claim",
-  consumer: "consumer complaint",
-  cheque: "cheque complaint",
-  criminal: "criminal complaint",
+const HEADLINE_KEY: Record<EstimateInput["caseType"], MessageKey> = {
+  family: "hero.kind.family",
+  property: "hero.kind.property",
+  money: "hero.kind.money",
+  commercial: "hero.kind.commercial",
+  consumer: "hero.kind.consumer",
+  cheque: "hero.kind.cheque",
+  criminal: "hero.kind.criminal",
 };
 
 export default function Hero({
@@ -24,45 +28,50 @@ export default function Hero({
   input: EstimateInput;
   njdg: NjdgStatus | null;
 }) {
+  const { t } = useI18n();
   const claim = inrShort(input.suitValue);
-  const label = HEADLINE_LABEL[input.caseType];
-  const stateLabel = input.state === "Other" ? "this State" : input.state;
+  const label = t(HEADLINE_KEY[input.caseType]);
+  const stateLabel = input.state === "Other" ? t("hero.thisState") : input.state;
 
   const pending = njdg?.total ?? 52119188;
 
   return (
     <section className="hero shell" aria-labelledby="hero-heading">
-      <p className="hero-kicker">For a first-time litigant in India</p>
+      <p className="hero-kicker">{t("hero.kicker")}</p>
       {result ? (
         <>
           <p className="hero-statement">
-            A <b>{claim}</b> {label} in {stateLabel} waits{" "}
-            <b>{months(result.monthsUsed)}</b>
-            {result.referenceOnly ? " on the civil-court reference queue." : "."}{" "}
-            The wait alone costs:
+            {result.referenceOnly
+              ? t("hero.statementReference", {
+                  claim,
+                  kind: label,
+                  state: stateLabel,
+                  months: months(result.monthsUsed),
+                })
+              : t("hero.statement", {
+                  claim,
+                  kind: label,
+                  state: stateLabel,
+                  months: months(result.monthsUsed),
+                })}{" "}
+            {t("hero.waitCosts")}
           </p>
           <p className="hero-number" id="hero-heading" aria-live="polite">
             {inrShort(result.delayCost)}
             <span className="hero-number-of">
-              out of {inrShort(result.total)} the case will cost you
+              {t("hero.outOf", { total: inrShort(result.total) })}
             </span>
           </p>
         </>
       ) : (
         <h1 className="hero-number" id="hero-heading">
-          Reading the queue…
+          {t("hero.readingQueue")}
         </h1>
       )}
-      <p className="hero-deck">
-        CaseTime prices the queue: the court fee, the appearances, the wages you lose and the money
-        locked up in the claim. The figures below show the forums that cost less and the free legal
-        help you may already qualify for.
-      </p>
+      <p className="hero-deck">{t("hero.deck")}</p>
 
       <p className="hero-context">
-        Against a national backlog of{" "}
-        <b>{num(pending)}</b> cases in the district courts, fetched from NJDG on 6 November 2026.
-        Every rupee below carries a sourced Act, schedule or rate.
+        {t("hero.context", { pending: num(pending) })}
       </p>
 
       <figure className="hero-figure">
@@ -70,22 +79,23 @@ export default function Hero({
           <>
             <div className="figure-head">
               <div>
-                <p className="figure-title">{CASE_TYPE_LABEL[input.caseType]} · {stateLabel} · {inrShort(input.suitValue)}</p>
-                <p className="figure-sub">
-                  The dot is filing. The band is the money spent along the queue.
+                <p className="figure-title">
+                  {t("hero.figureTitle", {
+                    caseType: t(CASE_TYPE_LABEL_KEY[input.caseType]),
+                    state: stateLabel,
+                    amount: inrShort(input.suitValue),
+                  })}
                 </p>
+                <p className="figure-sub">{t("hero.figureSub")}</p>
               </div>
               <p className="figure-sub">
-                Total at the end of the queue:{" "}
-                <strong style={{ color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>
-                  {inrShort(result.total)}
-                </strong>
+                {t("hero.totalAtEnd", { total: inrShort(result.total) })}
               </p>
             </div>
             <TimeCostBand result={result} input={input} />
           </>
         ) : (
-          <p className="figure-sub">Building the example statement…</p>
+          <p className="figure-sub">{t("hero.building")}</p>
         )}
       </figure>
     </section>

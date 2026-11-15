@@ -1,4 +1,5 @@
 import aid from "../data/legalAid.json";
+import type { MessageKey } from "./i18n/messages/en";
 import type { EstimateInput } from "./types";
 
 export interface AidCategory {
@@ -117,3 +118,21 @@ export const LEGAL_AID_META = {
 };
 
 export const LEGAL_AID_CATEGORIES = AID.categories;
+
+/**
+ * Display keys for s.12 categories. The JSON labels stay the canonical English
+ * values used by the printed statement; UI components render these keys.
+ */
+export const AID_CATEGORY_KEY: Record<string, MessageKey> = {
+  scst: "aid.category.scst",
+  trafficking: "aid.category.trafficking",
+  "woman-child": "aid.category.woman-child",
+  disability: "aid.category.disability",
+  disaster: "aid.category.disaster",
+  workman: "aid.category.workman",
+  custody: "aid.category.custody",
+  senior: "aid.category.senior",
+  transgender: "aid.category.transgender",
+  acid: "aid.category.acid",
+  hiv: "aid.category.hiv",
+};

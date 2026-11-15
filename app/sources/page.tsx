@@ -7,95 +7,110 @@ import {
   STATE_FEES,
   WAGE_SOURCE,
 } from "../../lib/fees";
-import { LEGAL_AID_CATEGORIES, LEGAL_AID_META } from "../../lib/legalAid";
+import {
+  AID_CATEGORY_KEY,
+  LEGAL_AID_CATEGORIES,
+  LEGAL_AID_META,
+} from "../../lib/legalAid";
 import { SNAPSHOT } from "../../lib/njdg";
 import { OSM_SNAPSHOT_DATE } from "../../lib/places";
 import { inr, num } from "../../lib/format";
+import type { MessageKey } from "../../lib/i18n/messages/en";
+import { getI18n } from "../../lib/i18n/server";
 
 export const metadata = { title: "CaseTime — Sources" };
 
+const AGE_BAND_KEY: Record<string, MessageKey> = {
+  "<1 year": "band.age.lessThan1",
+  "1-3 years": "band.age.1to3",
+  "3-5 years": "band.age.3to5",
+  "5-10 years": "band.age.5to10",
+  ">10 years": "band.age.moreThan10",
+};
+
 export default function Sources() {
+  const { t } = getI18n();
+
   return (
     <>
       <Masthead />
       <main className="shell prose-page">
         <p>
-          <a href="/">Back to the estimator</a>
+          <a href="/">{t("common.backToEstimator")}</a>
         </p>
         <p className="hero-kicker" style={{ marginTop: 18 }}>
-          Sources
+          {t("sourcesPage.kicker")}
         </p>
-        <h1 className="display">Every rupee and every month, with a link.</h1>
-        <p className="hero-deck">
-          This page is the audit trail. Each row names the instrument, the section, the URL and the
-          access date. Where a State or a forum is not sourced, the row says so; the app does not fill
-          the gap with a default.
-        </p>
+        <h1 className="display">{t("sourcesPage.title")}</h1>
+        <p className="hero-deck">{t("sourcesPage.deck")}</p>
 
-        <h2>Time and pendency</h2>
+        <h2>{t("sourcesPage.time.title")}</h2>
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">Figure</th>
-              <th scope="col">Value</th>
-              <th scope="col">Source</th>
-              <th scope="col">Access</th>
+              <th scope="col">{t("sourcesPage.colFigure")}</th>
+              <th scope="col">{t("sourcesPage.colValue")}</th>
+              <th scope="col">{t("sourcesPage.colSource")}</th>
+              <th scope="col">{t("sourcesPage.colAccess")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Pending, civil / criminal / total</td>
+              <td>{t("sourcesPage.pending")}</td>
               <td>
                 {num(SNAPSHOT.pendency.civil)} / {num(SNAPSHOT.pendency.criminal)} /{" "}
                 {num(SNAPSHOT.pendency.total)}
               </td>
               <td>
-                NJDG dashboard, parsed live server-side.{" "}
+                {t("sourcesPage.njdgParsed")}{" "}
                 <a href={SNAPSHOT.source} target="_blank" rel="noreferrer">
                   njdg.ecourts.gov.in
                 </a>
                 <br />
-                <span className="muted">{SNAPSHOT.sourceNote}</span>
+                <span className="muted">{t("sourcesPage.njdgSourceNote")}</span>
               </td>
               <td>{SNAPSHOT.fetchedAt}</td>
             </tr>
             <tr>
-              <td>Disposed last month, civil / criminal</td>
+              <td>{t("sourcesPage.disposed")}</td>
               <td>
-                {num(SNAPSHOT.disposedLastMonth.civil)} / {num(SNAPSHOT.disposedLastMonth.criminal)}
+                {num(SNAPSHOT.disposedLastMonth.civil)} /{" "}
+                {num(SNAPSHOT.disposedLastMonth.criminal)}
               </td>
-              <td>Same NJDG dashboard.</td>
+              <td>{t("sourcesPage.sameDashboard")}</td>
               <td>{SNAPSHOT.fetchedAt}</td>
             </tr>
             <tr>
-              <td>Age bands (civil)</td>
+              <td>{t("sourcesPage.ageBands")}</td>
               <td>
-                {SNAPSHOT.ageBands.civil.map((n, i) => `${SNAPSHOT.ageBands.labels[i]}: ${num(n)}`).join("; ")}
+                {SNAPSHOT.ageBands.civil
+                  .map((n, i) => {
+                    const label = SNAPSHOT.ageBands.labels[i];
+                    return `${AGE_BAND_KEY[label] ? t(AGE_BAND_KEY[label]) : label}: ${num(n)}`;
+                  })
+                  .join("; ")}
               </td>
-              <td>
-                Same dashboard, <code>fetchYearData</code> band string. These are ages of cases still
-                pending, not disposal times.
-              </td>
+              <td>{t("sourcesPage.ageBandsSource")}</td>
               <td>{SNAPSHOT.fetchedAt}</td>
             </tr>
             <tr>
-              <td>data.gov.in NJDG datasets</td>
-              <td>Catalog linked, not embedded</td>
-              <td>{SNAPSHOT.dataGovNote}</td>
+              <td>{t("sourcesPage.dataGov")}</td>
+              <td>{t("sourcesPage.catalogLinked")}</td>
+              <td>{t("sourcesPage.dataGovNote")}</td>
               <td>{SNAPSHOT.fetchedAt}</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>Court fees: the Act, the section, the rule</h2>
+        <h2>{t("sourcesPage.fees.title")}</h2>
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">State</th>
-              <th scope="col">Act and section</th>
-              <th scope="col">Money-suit rule (as read from the Act)</th>
-              <th scope="col">Link</th>
-              <th scope="col">Access</th>
+              <th scope="col">{t("sourcesPage.colState")}</th>
+              <th scope="col">{t("sourcesPage.colAct")}</th>
+              <th scope="col">{t("sourcesPage.colRule")}</th>
+              <th scope="col">{t("sourcesPage.colLink")}</th>
+              <th scope="col">{t("sourcesPage.colAccess")}</th>
             </tr>
           </thead>
           <tbody>
@@ -110,13 +125,13 @@ export default function Sources() {
                 <td>{s.note}</td>
                 <td>
                   <a href={s.url} target="_blank" rel="noreferrer">
-                    Act
+                    {t("common.act")}
                   </a>
                   {s.textUrl && (
                     <>
                       <br />
                       <a href={s.textUrl} target="_blank" rel="noreferrer">
-                        Schedule
+                        {t("common.schedule")}
                       </a>
                     </>
                   )}
@@ -134,38 +149,40 @@ export default function Sources() {
               <td>{CENTRAL_FEE.note}</td>
               <td>
                 <a href={CENTRAL_FEE.url} target="_blank" rel="noreferrer">
-                  Act
+                  {t("common.act")}
                 </a>
               </td>
               <td>{CENTRAL_FEE.accessed}</td>
             </tr>
             <tr>
-              <td>Any other State</td>
-              <td>Not yet sourced</td>
-              <td className="unsourced">
-                The app shows “not yet sourced” and excludes the court fee from the total. It does not
-                reuse the central schedule as a default.
-              </td>
+              <td>{t("sourcesPage.otherState")}</td>
+              <td>{t("common.notYetSourced")}</td>
+              <td className="unsourced">{t("sourcesPage.otherStateRule")}</td>
               <td>—</td>
               <td>—</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>Consumer Commission fee</h2>
+        <h2>{t("sourcesPage.consumer.title")}</h2>
         <p>
-          {CONSUMER_FEE.act}, {CONSUMER_FEE.section}. The fee follows the value of the goods or
-          services paid as consideration, not the compensation claimed.{" "}
+          {t("sourcesPage.consumer.body", {
+            act: CONSUMER_FEE.act,
+            section: CONSUMER_FEE.section,
+            accessed: CONSUMER_FEE.accessed,
+          })}{" "}
           <a href={CONSUMER_FEE.url} target="_blank" rel="noreferrer">
-            Fee table
+            {t("common.feeTable")}
           </a>
-          , accessed {CONSUMER_FEE.accessed}.
+          .
         </p>
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">Value of goods or services paid as consideration</th>
-              <th scope="col" className="num">Fee</th>
+              <th scope="col">{t("sourcesPage.consumer.colValue")}</th>
+              <th scope="col" className="num">
+                {t("sourcesPage.consumer.colFee")}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -174,44 +191,48 @@ export default function Sources() {
                 <tr key={String(r.max)}>
                   <td>
                     {r.max === null
-                      ? "Above ₹10,00,00,000"
-                      : `Up to ${inr(r.max)}`}
+                      ? t("sourcesPage.consumer.above")
+                      : t("sourcesPage.consumer.upTo", { amount: inr(r.max) })}
                   </td>
-                  <td className="num">{r.amount === 0 ? "Nil" : inr(r.amount)}</td>
+                  <td className="num">
+                    {r.amount === 0 ? t("sourcesPage.consumer.nil") : inr(r.amount)}
+                  </td>
                 </tr>
               ))}
           </tbody>
         </table>
-        <p className="section-note">{CONSUMER_FEE.note}</p>
+        <p className="section-note">{t("sourcesPage.consumer.note")}</p>
 
-        <h2>Legal aid</h2>
+        <h2>{t("sourcesPage.legalAid.title")}</h2>
         <p>
-          {LEGAL_AID_META.act}, {LEGAL_AID_META.section}.{" "}
+          {t("sourcesPage.legalAid.body", {
+            act: LEGAL_AID_META.act,
+            section: LEGAL_AID_META.section,
+          })}{" "}
           <a href={LEGAL_AID_META.url} target="_blank" rel="noreferrer">
-            NALSA legal-aid page
+            {t("common.nalsaPage")}
           </a>{" "}
-          and{" "}
+          ·{" "}
           <a href={LEGAL_AID_META.textUrl} target="_blank" rel="noreferrer">
-            Act text
+            {t("common.actText")}
           </a>
-          , accessed 2026-11-06.
         </p>
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">Criterion</th>
-              <th scope="col">Cite</th>
+              <th scope="col">{t("sourcesPage.legalAid.colCriterion")}</th>
+              <th scope="col">{t("sourcesPage.legalAid.colCite")}</th>
             </tr>
           </thead>
           <tbody>
             {LEGAL_AID_CATEGORIES.map((c) => (
               <tr key={c.id}>
-                <td>{c.label}</td>
+                <td>{AID_CATEGORY_KEY[c.id] ? t(AID_CATEGORY_KEY[c.id]) : c.label}</td>
                 <td>{c.cite}</td>
               </tr>
             ))}
             <tr>
-              <td>Annual income below the State ceiling</td>
+              <td>{t("sourcesPage.legalAid.incomeCeiling")}</td>
               <td>s.12(h)</td>
             </tr>
           </tbody>
@@ -220,9 +241,11 @@ export default function Sources() {
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">State</th>
-              <th scope="col" className="num">Income ceiling</th>
-              <th scope="col">Source</th>
+              <th scope="col">{t("sourcesPage.legalAid.colIncomeState")}</th>
+              <th scope="col" className="num">
+                {t("sourcesPage.legalAid.colIncomeLimit")}
+              </th>
+              <th scope="col">{t("sourcesPage.colSource")}</th>
             </tr>
           </thead>
           <tbody>
@@ -234,92 +257,110 @@ export default function Sources() {
               </tr>
             ))}
             <tr>
-              <td>Delhi extras</td>
-              <td className="num">₹4,00,000 for senior citizens and transgender persons</td>
-              <td>{LEGAL_AID_META.income.Delhi.extra.map((e) => `${e.label} (${e.cite})`).join("; ")}</td>
+              <td>{t("sourcesPage.legalAid.delhiExtras")}</td>
+              <td className="num">{t("sourcesPage.legalAid.delhiExtrasValue")}</td>
+              <td>
+                {LEGAL_AID_META.income.Delhi.extra
+                  .map(
+                    (e) =>
+                      `${AID_CATEGORY_KEY[e.id] ? t(AID_CATEGORY_KEY[e.id]) : e.label} (${e.cite})`
+                  )
+                  .join("; ")}
+              </td>
             </tr>
             <tr>
-              <td>Other States</td>
-              <td className="num">Not stored</td>
-              <td>
-                The app says “no income ceiling stored for this State” and routes you to the DLSA.
-              </td>
+              <td>{t("sourcesPage.legalAid.otherStates")}</td>
+              <td className="num">{t("common.notStored")}</td>
+              <td>{t("sourcesPage.legalAid.otherStatesRule")}</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>Wages, advocate and interest</h2>
+        <h2>{t("sourcesPage.wages.title")}</h2>
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">Figure</th>
-              <th scope="col">Value</th>
-              <th scope="col">Source</th>
-              <th scope="col">Access</th>
+              <th scope="col">{t("sourcesPage.colFigure")}</th>
+              <th scope="col">{t("sourcesPage.colValue")}</th>
+              <th scope="col">{t("sourcesPage.colSource")}</th>
+              <th scope="col">{t("sourcesPage.colAccess")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Daily wage, national average</td>
-              <td>₹{num(WAGE_SOURCE.nationalAverage)}/day (floor ₹{num(WAGE_SOURCE.floor)})</td>
+              <td>{t("sourcesPage.wages.daily")}</td>
+              <td>
+                {t("sourcesPage.wages.dailyValue", {
+                  average: `₹${num(WAGE_SOURCE.nationalAverage)}`,
+                  floor: `₹${num(WAGE_SOURCE.floor)}`,
+                })}
+              </td>
               <td>
                 {WAGE_SOURCE.source}{" "}
                 <a href={WAGE_SOURCE.url} target="_blank" rel="noreferrer">
-                  PIB release
+                  {t("common.pibRelease")}
                 </a>
               </td>
               <td>{WAGE_SOURCE.accessed}</td>
             </tr>
             {WAGE_SOURCE.stateWages.map((w) => (
               <tr key={w.state}>
-                <td>{w.state} wage</td>
-                <td>{w.wage ? `₹${num(w.wage)}/day` : "Band only"}</td>
+                <td>{t("sourcesPage.wages.stateWage", { state: w.state })}</td>
+                <td>
+                  {w.wage
+                    ? `₹${num(w.wage)}/day`
+                    : t("sourcesPage.wages.bandOnly")}
+                </td>
                 <td>{w.source}</td>
                 <td>{WAGE_SOURCE.accessed}</td>
               </tr>
             ))}
             <tr>
-              <td>Advocate, default anchor</td>
-              <td>{inr(ADVOCATE_SOURCES.legalAidFloor.amount)} per {ADVOCATE_SOURCES.legalAidFloor.unit}</td>
+              <td>{t("sourcesPage.wages.advocateDefault")}</td>
+              <td>
+                {t("sourcesPage.wages.perAppearance", {
+                  amount: inr(ADVOCATE_SOURCES.legalAidFloor.amount),
+                })}
+              </td>
               <td>{ADVOCATE_SOURCES.legalAidFloor.source}</td>
               <td>2026-11-06</td>
             </tr>
             <tr>
-              <td>Advocate, legal-aid cover</td>
-              <td>Panel lawyer fee borne by the legal services institution</td>
+              <td>{t("sourcesPage.wages.advocateCover")}</td>
+              <td>{t("sourcesPage.wages.advocateCoverValue")}</td>
               <td>{ADVOCATE_SOURCES.legalAidCover.source}</td>
               <td>2026-11-06</td>
             </tr>
             <tr>
-              <td>RBI policy repo rate</td>
+              <td>{t("sourcesPage.wages.repo")}</td>
               <td>{RBI.repoRate}%</td>
               <td>
                 {RBI.source}{" "}
                 <a href={RBI.url} target="_blank" rel="noreferrer">
-                  RBI release
+                  {t("common.rbiRelease")}
                 </a>
               </td>
               <td>{RBI.accessed}</td>
             </tr>
           </tbody>
         </table>
-        <p className="section-note">{RBI.note}</p>
+        <p className="section-note">{t("sourcesPage.wages.rbiNote")}</p>
 
-        <h2>Alternatives</h2>
+        <h2>{t("sourcesPage.alternatives.title")}</h2>
         <table className="data-table">
           <thead>
             <tr>
-              <th scope="col">Forum</th>
-              <th scope="col">Statutory basis</th>
-              <th scope="col">Time</th>
-              <th scope="col">Link</th>
+              <th scope="col">{t("sourcesPage.alternatives.colForum")}</th>
+              <th scope="col">{t("sourcesPage.alternatives.colBasis")}</th>
+              <th scope="col">{t("sourcesPage.alternatives.colTime")}</th>
+              <th scope="col">{t("sourcesPage.alternatives.colLink")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Lok Adalat</td>
-              <td>Legal Services Authorities Act, 1987, ss.19–21</td>
-              <td>One sitting; no statutory outer limit</td>
+              <td>{t("sourcesPage.alternatives.lokName")}</td>
+              <td>{t("sourcesPage.alternatives.lokBasis")}</td>
+              <td>{t("sourcesPage.alternatives.lokTime")}</td>
               <td>
                 <a href="https://nalsa.gov.in/lok-adalats/" target="_blank" rel="noreferrer">
                   NALSA
@@ -327,44 +368,44 @@ export default function Sources() {
               </td>
             </tr>
             <tr>
-              <td>Pre-institution mediation</td>
+              <td>{t("sourcesPage.alternatives.pimsName")}</td>
+              <td>{t("sourcesPage.alternatives.pimsBasis")}</td>
+              <td>{t("sourcesPage.alternatives.pimsTime")}</td>
               <td>
-                Commercial Courts Act, 2015, s.12A; Commercial Courts (Pre-Institution Mediation and
-                Settlement) Rules, 2018, rr.3, 11 and Sch. II
-              </td>
-              <td>3 months + 2 months with consent</td>
-              <td>
-                <a href="https://nalsa.gov.in/pre-instituion-mediation/" target="_blank" rel="noreferrer">
+                <a
+                  href="https://nalsa.gov.in/pre-instituion-mediation/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   NALSA
-                </a>
-                {" "}
+                </a>{" "}
                 <a
                   href="https://ibclaw.in/the-commercial-courts-pre-institution-mediation-and-settlement-rules-2018/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Rules
+                  {t("common.rules")}
                 </a>
               </td>
             </tr>
             <tr>
-              <td>Mediation Act, 2023</td>
-              <td>ss.5, 18, 27</td>
-              <td>120 days + 60 days by agreement</td>
+              <td>{t("sourcesPage.alternatives.mediationName")}</td>
+              <td>{t("sourcesPage.alternatives.mediationBasis")}</td>
+              <td>{t("sourcesPage.alternatives.mediationTime")}</td>
               <td>
                 <a
                   href="https://upload.indiacode.nic.in/view-casepdf?id=AC_CEN_3_46_00011_A2023-32_1697800640677&type=act"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Act PDF
+                  {t("common.actPdf")}
                 </a>
               </td>
             </tr>
             <tr>
-              <td>Compounding a s.138 complaint</td>
-              <td>Negotiable Instruments Act, 1881, s.147; s.143A</td>
-              <td>At any stage with court permission</td>
+              <td>{t("sourcesPage.alternatives.compoundName")}</td>
+              <td>{t("sourcesPage.alternatives.compoundBasis")}</td>
+              <td>{t("sourcesPage.alternatives.compoundTime")}</td>
               <td>
                 <a href="https://devgan.in/nia/section/147/" target="_blank" rel="noreferrer">
                   s.147
@@ -374,38 +415,23 @@ export default function Sources() {
           </tbody>
         </table>
 
-        <h2>Places</h2>
+        <h2>{t("sourcesPage.places.title")}</h2>
         <p>
-          Courthouse locations are a cached OpenStreetMap snapshot fetched through the Overpass API
-          on {OSM_SNAPSHOT_DATE}. The fetch script tries three mirrors and keeps the previous cache
-          for a city if every mirror fails. Coordinates are copied from OSM; no location is inferred.
-          The snapshot covers four city centres and is not exhaustive.{" "}
+          {t("sourcesPage.places.body", { date: OSM_SNAPSHOT_DATE })}{" "}
           <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
-            OpenStreetMap licence (ODbL 1.0)
+            {t("places.licence")}
           </a>
           .
         </p>
 
-        <h2>Partner and model adapters</h2>
+        <h2>{t("sourcesPage.adapters.title")}</h2>
         <ul>
-          <li>
-            <strong>eCourtsIndia partner API</strong> — third-party, paid, key-gated.{" "}
-            <code>GET /api/partner/v2/search</code>, <code>GET /api/partner/case/&#123;cnr&#125;</code>
-            . Without <code>ECI_KEY</code> the app runs in aggregate mode with a banner. CNRs come
-            from search results only; the app never invents a CNR and never scrapes
-            services.ecourts.gov.in.
-          </li>
-          <li>
-            <strong>BharatCode</strong> — the adapter remains in <code>lib/bharatcode.ts</code> for
-            optional plain-language summaries, but the decision flow does not paraphrase the numbers
-            through a model. The statement is deterministic.
-          </li>
+          <li>{t("sourcesPage.adapters.eci")}</li>
+          <li>{t("sourcesPage.adapters.bharatcode")}</li>
         </ul>
 
         <p className="section-note">
-          All sources were accessed on 6 November 2026 unless the row states a different date. The
-          NJDG snapshot was fetched on {SNAPSHOT.fetchedAt}. Act texts can be amended; check the
-          current text before filing.
+          {t("sourcesPage.footer", { date: SNAPSHOT.fetchedAt })}
         </p>
       </main>
     </>

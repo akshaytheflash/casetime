@@ -1,10 +1,33 @@
+"use client";
+
 import type { EstimateResult } from "../lib/estimator";
+import type { MessageKey } from "../lib/i18n/messages/en";
 import { osmLink, placesForState } from "../lib/places";
+import { useI18n } from "./I18nProvider";
 
 type Places = ReturnType<typeof placesForState>;
 
-export default function PlacesSection({ result, places }: { result: EstimateResult; places: Places }) {
+const AUTHORITY_NOTE_KEY: Record<string, MessageKey> = {
+  "Delhi State Legal Services Authority (DSLSA)": "aid.authority.delhi",
+  "Maharashtra State Legal Services Authority (MSLSA)": "aid.authority.maharashtra",
+  "Karnataka State Legal Services Authority (KSLSA)": "aid.authority.karnataka",
+  "Tamil Nadu State Legal Services Authority (TNSLSA)": "aid.authority.tamilNadu",
+  "National Legal Services Authority (NALSA)": "aid.authority.nalsa",
+};
+
+export default function PlacesSection({
+  result,
+  places,
+  state,
+}: {
+  result: EstimateResult;
+  places: Places;
+  state?: string;
+}) {
+  const { t } = useI18n();
   const aid = result.legalAid;
+  const stateLabel =
+    state === "Other" ? t("hero.thisState") : state ?? places.city ?? "";
 
   return (
     <section
@@ -15,19 +38,16 @@ export default function PlacesSection({ result, places }: { result: EstimateResu
       <div className="section-head">
         <div>
           <h2 className="h2" id="places-heading">
-            Nearest help
+            {t("places.heading")}
           </h2>
-          <p className="section-note">
-            Courthouse locations are a cached OpenStreetMap snapshot. The DLSA is the free-help
-            route; call before you travel.
-          </p>
+          <p className="section-note">{t("places.intro")}</p>
         </div>
       </div>
 
       <div className="places-grid">
         <div>
           <h3 className="h3" style={{ marginBottom: 8 }}>
-            {places.city ? `Courthouses around ${places.city}` : "Courthouses"}
+            {places.city ? t("places.around", { city: places.city }) : t("places.courthouses")}
           </h3>
           {places.places.length > 0 ? (
             <ul className="place-list">
@@ -38,53 +58,56 @@ export default function PlacesSection({ result, places }: { result: EstimateResu
                     <p className="place-meta">
                       {p.tags["addr:street"] ? `${p.tags["addr:street"]} · ` : ""}
                       {p.tags.operator ? `${p.tags.operator} · ` : ""}
-                      OSM {p.osmType}
+                      {t("places.osmType", { type: p.osmType })}
                     </p>
                   </div>
                   <div className="place-distance">
                     {p.distanceKm < 1
-                      ? `${Math.round(p.distanceKm * 1000)} m`
-                      : `${p.distanceKm.toFixed(1)} km`}
+                      ? t("places.metres", { distance: Math.round(p.distanceKm * 1000) })
+                      : t("places.kilometres", { distance: p.distanceKm.toFixed(1) })}
                     <a href={osmLink(p)} target="_blank" rel="noreferrer">
-                      Open in OSM
+                      {t("places.openOsm")}
                     </a>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="section-note">{places.note}</p>
+            <p className="section-note">{t("places.empty", { state: stateLabel })}</p>
           )}
           <p className="section-note" style={{ marginTop: 10 }}>
-            {places.note} Snapshot fetched {new Date(places.fetchedAt).toLocaleDateString("en-IN", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-            .{" "}
+            {t("places.note")}{" "}
+            {t("places.snapshot", {
+              date: new Date(places.fetchedAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }),
+            })}{" "}
             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
-              OpenStreetMap licence
+              {t("places.licence")}
             </a>
             .
           </p>
         </div>
 
         <div className="aid-card">
-          <h3 className="h3">Free legal help</h3>
+          <h3 className="h3">{t("places.help")}</h3>
           <p>
             <strong>{aid.authority.name}</strong>
           </p>
-          <p>{aid.authority.note}</p>
           <p>
-            The DLSA can assign a panel advocate, draft the plaint or complaint, and explain the
-            court-fee position. If you meet a s.12 criterion, the advocate is free.
+            {AUTHORITY_NOTE_KEY[aid.authority.name]
+              ? t(AUTHORITY_NOTE_KEY[aid.authority.name])
+              : aid.authority.note}
           </p>
+          <p>{t("places.helpBody")}</p>
           <div className="aid-actions">
             <a className="btn" href={aid.authority.url} target="_blank" rel="noreferrer">
-              Find your DLSA
+              {t("aid.findDlsa")}
             </a>
             <a className="btn btn-secondary" href={aid.applyUrl} target="_blank" rel="noreferrer">
-              Apply through NALSA
+              {t("aid.applyNalsa")}
             </a>
           </div>
         </div>

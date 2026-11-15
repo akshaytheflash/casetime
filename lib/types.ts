@@ -1,6 +1,8 @@
 // Shared types and case-type routing. Every rupee figure carries its source
 // through to the UI; nothing is defaulted silently.
 
+import type { MessageKey } from "./i18n/messages/en";
+
 export type Bucket = "civil" | "criminal";
 export type Forum = "civil" | "criminal" | "consumer";
 
@@ -35,6 +37,31 @@ export const CASE_TYPE_LABEL: Record<CaseType, string> = {
   consumer: "Consumer complaint",
   cheque: "Cheque bounce (s.138)",
   criminal: "Other criminal complaint",
+};
+
+/**
+ * Display keys for the case-type labels/hints. The English maps above remain
+ * the canonical values used by the printed statement and API payloads; the UI
+ * renders these keys through t() so other locales can override them.
+ */
+export const CASE_TYPE_LABEL_KEY: Record<CaseType, MessageKey> = {
+  family: "caseType.family",
+  property: "caseType.property",
+  money: "caseType.money",
+  commercial: "caseType.commercial",
+  consumer: "caseType.consumer",
+  cheque: "caseType.cheque",
+  criminal: "caseType.criminal",
+};
+
+export const CASE_TYPE_HINT_KEY: Record<CaseType, MessageKey> = {
+  family: "caseType.hint.family",
+  property: "caseType.hint.property",
+  money: "caseType.hint.money",
+  commercial: "caseType.hint.commercial",
+  consumer: "caseType.hint.consumer",
+  cheque: "caseType.hint.cheque",
+  criminal: "caseType.hint.criminal",
 };
 
 export const CASE_TYPE_SHORT: Record<CaseType, string> = {

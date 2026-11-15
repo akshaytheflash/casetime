@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import type { EstimateInput } from "../lib/types";
-import { CASE_TYPE_LABEL } from "../lib/types";
 import type { EstimateResult } from "../lib/estimator";
-import { inr, inrShort, months } from "../lib/format";
+import { inr, months } from "../lib/format";
 import { buildNotice } from "../lib/notice";
 import { placesForState } from "../lib/places";
 import Masthead, { type NjdgStatus } from "../components/Masthead";
@@ -18,6 +17,7 @@ import PlacesSection from "../components/PlacesSection";
 import NoticePanel from "../components/NoticePanel";
 import Statement from "../components/Statement";
 import FloatingStatement from "../components/FloatingStatement";
+import { useI18n } from "../components/I18nProvider";
 
 const DEFAULTS: EstimateInput = {
   caseType: "money",
@@ -39,6 +39,7 @@ interface Payload {
 }
 
 export default function Home() {
+  const { t } = useI18n();
   const [input, setInput] = useState<EstimateInput>(DEFAULTS);
   const [payload, setPayload] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,7 +58,7 @@ export default function Home() {
         body: JSON.stringify(next),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "The estimate did not build.");
+      if (!res.ok) throw new Error(data.error || t("common.errorBuild"));
       setPayload({ input: data.input as EstimateInput, result: data.result as EstimateResult });
       setDirty(false);
       if (opts.scroll) {
@@ -72,7 +73,7 @@ export default function Home() {
         });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "The estimate did not build.");
+      setError(err instanceof Error ? err.message : t("common.errorBuild"));
     } finally {
       setLoading(false);
     }
@@ -101,6 +102,7 @@ export default function Home() {
       .then((r) => r.json())
       .then((d) => setEci(Boolean(d.eci)))
       .catch(() => undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleChange(next: EstimateInput) {
@@ -126,7 +128,7 @@ export default function Home() {
   return (
     <main>
       <a className="skip" href="#docket">
-        Skip to the docket
+        {t("common.skipToDocket")}
       </a>
 
       <div className="screen-only">
@@ -149,7 +151,7 @@ export default function Home() {
             {dirty && payload && (
               <div className="callout" style={{ marginTop: 0 }}>
                 <p>
-                  <strong>The statement below uses the previous inputs.</strong>{" "}
+                  <strong>{t("result.dirty")}</strong>{" "}
                   <button
                     type="button"
                     onClick={() => void runEstimate(input, { scroll: false })}
@@ -163,9 +165,8 @@ export default function Home() {
                       font: "inherit",
                     }}
                   >
-                    Rebuild it now
-                  </button>{" "}
-                  to see the change.
+                    {t("result.rebuild")}
+                  </button>
                 </p>
               </div>
             )}
@@ -173,48 +174,58 @@ export default function Home() {
             {payload ? (
               <div className={loading ? "" : "result-enter"}>
                 <div className="section-head" style={{ marginBottom: 8 }}>
-                  <h2 className="h2">What the queue costs</h2>
+                  <h2 className="h2">{t("result.heading")}</h2>
                   <span className="tag">
-                    {payload.result.cohort ? "Disposed-case cohort" : "Queue-based lower bound"}
+                    {payload.result.cohort ? t("result.tagCohort") : t("result.tagQueue")}
                   </span>
                 </div>
                 <p className="result-headline">
-                  {inr(payload.result.delayCost)} of the {inr(payload.result.total)} is the wait.
+                  {t("result.headline", {
+                    delay: inr(payload.result.delayCost),
+                    total: inr(payload.result.total),
+                  })}
                 </p>
                 <p className="result-sub">
-                  The fee and appearances are {inr(payload.result.litigationCost)}. The lost wages
-                  and the money tied up are {inr(payload.result.delayCost)}. The time figure is{" "}
-                  {months(payload.result.monthsUsed)} of{" "}
-                  {payload.result.referenceOnly ? "a reference queue" : "the civil queue"} — read it
-                  as a floor, not a schedule.
+                  {t("result.sub", {
+                    litigation: inr(payload.result.litigationCost),
+                    delay: inr(payload.result.delayCost),
+                    months: months(payload.result.monthsUsed),
+                    basis: payload.result.referenceOnly
+                      ? t("result.basisReference")
+                      : t("result.basisCivil"),
+                  })}
                 </p>
                 {payload.result.legalAid.eligible && (
                   <p className="result-sub" style={{ color: "var(--sage-ink)" }}>
-                    <span className="tag tag-sage">Legal aid</span> The advocate line is ₹0 because
-                    you may qualify under s.12. That removes {inr(payload.result.legalAid.advocateSaving)}{" "}
-                    from the statement.
+                    <span className="tag tag-sage">{t("common.legalAid")}</span>{" "}
+                    {t("result.legalAidNote", {
+                      saving: inr(payload.result.legalAid.advocateSaving),
+                    })}
                   </p>
                 )}
-                <CostLedger result={payload.result} />
+                <CostLedger result={payload.result} input={payload.input} />
               </div>
             ) : loading ? (
-              <p className="section-note">
-                Building the example statement from the NJDG snapshot and the sourced schedules…
-              </p>
+              <p className="section-note">{t("result.building")}</p>
             ) : (
               <div className="callout callout-cost">
                 <p>
-                  <strong>The statement did not build.</strong>{" "}
-                  {error ?? "Check the claim amount and try again."}
+                  <strong>{t("result.failed")}</strong> {error ?? t("result.failedHint")}
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {payload && <LegalAidPanel result={payload.result} />}
-        {payload && <AlternativesSection result={payload.result} />}
-        {payload && <PlacesSection result={payload.result} places={places} />}
+        {payload && <LegalAidPanel result={payload.result} state={payload.input.state} />}
+        {payload && <AlternativesSection result={payload.result} input={payload.input} />}
+        {payload && (
+          <PlacesSection
+            result={payload.result}
+            places={places}
+            state={payload.input.state}
+          />
+        )}
         {payload && <NoticePanel notice={notice} />}
 
         <section
@@ -225,37 +236,26 @@ export default function Home() {
           <div className="section-head">
             <div>
               <h2 className="h2" id="method-note-heading">
-                What this estimate is, and is not
+                {t("homeMethod.heading")}
               </h2>
             </div>
           </div>
           <div className="grid-2">
             <div>
               <p className="section-note" style={{ maxWidth: "58ch" }}>
-                <strong>It is a queue-based lower bound.</strong> The time figure is pendency ÷
-                monthly disposals: how long today&apos;s backlog would take to clear at today&apos;s
-                throughput if no new cases arrived. It is not a prediction for your case.
+                {t("homeMethod.lowerBound")}
               </p>
               <p className="section-note" style={{ maxWidth: "58ch", marginTop: 10 }}>
-                <strong>It does not use age bands as disposal times.</strong> NJDG publishes the age
-                of cases still pending, not how long disposed cases took. Cases that settle or
-                dispose early leave the pending pool, so the age bands carry survivorship bias. We
-                show them as the age of the waiting stock and keep them out of the cost calculation.
+                {t("homeMethod.ageBands")}
               </p>
             </div>
             <div>
               <p className="section-note" style={{ maxWidth: "58ch" }}>
-                <strong>Every rupee has a source or a formula.</strong> Court fees come from the State
-                Act schedules (Delhi, Maharashtra, Karnataka, Tamil Nadu); a State without a sourced
-                schedule is marked <em>not yet sourced</em> and excluded from the total. The wage is
-                the VB-G RAM G national average. The cost of money is the RBI repo rate. The advocate
-                fee is your input, anchored to the DSLSA panel rate.
+                {t("homeMethod.sourced")}
               </p>
               <p className="section-note" style={{ maxWidth: "58ch", marginTop: 10 }}>
-                <strong>A cohort would be better.</strong> With an eCourtsIndia partner key, the app
-                can use filing-to-decision durations from disposed cases. Without the key, it says so
-                on this screen and uses the labelled floor.{" "}
-                <a href="/methodology">Read the methodology</a>.
+                {t("homeMethod.cohort")}{" "}
+                <a href="/methodology">{t("homeMethod.link")}</a>.
               </p>
             </div>
           </div>
@@ -264,26 +264,18 @@ export default function Home() {
         <footer className="site-footer">
           <div className="shell footer-grid">
             <div>
-              <p>
-                <strong>CaseTime</strong> · Code for a Billion (Code for India) — Timely Justice.
-                Built with Next.js, node:sqlite and the NJDG dated snapshot.
-              </p>
-              <p>
-                This is a planning estimate, not legal advice, not a prediction, and not a quote. For
-                advice on your case, go to the DLSA or an advocate.
-              </p>
+              <p>{t("footer.about")}</p>
+              <p>{t("footer.disclaimer")}</p>
             </div>
             <div>
               <p>
-                <a href="/methodology">Methodology</a> · <a href="/sources">Sources</a> ·{" "}
+                <a href="/methodology">{t("common.methodology")}</a> ·{" "}
+                <a href="/sources">{t("common.sources")}</a> ·{" "}
                 <a href="https://njdg.ecourts.gov.in/" target="_blank" rel="noreferrer">
                   NJDG
                 </a>
               </p>
-              <p>
-                Data accessed 6 November 2026. Court-fee Acts and the RBI rate are cited per row on
-                the sources page.
-              </p>
+              <p>{t("footer.dataNote")}</p>
             </div>
           </div>
         </footer>
