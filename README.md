@@ -50,7 +50,7 @@ Malayalam**. Urdu is right-to-left; the others are left-to-right.
 2. `/api/estimate` returns: **time** (queue-clearance horizon + pending-pool P50/P75/P90),
    **cost** (court fee + advocate + opportunity cost, each with a source),
    **3 workarounds** (mediation · Lok Adalat · commercial pre-institution mediation s.12A),
-   a **cost-vs-suit-value scatter**, and a BharatCode explainer (with template fallback on 503s).
+   a **cost-vs-suit-value scatter**, and a plain-language explainer built from the same numbers.
 
 ### Time model (honest aggregates — never per-case durations)
 
@@ -73,7 +73,7 @@ Court level: snapshot covers District Courts (NJDG); High Court shows the Distri
 | Court fees (4 states + Central) | Court Fees Act, 1870 + state schedules via cited summaries (see `/sources`) | 2026-11-06 |
 | Wages (opportunity floor) | PIB / VB-G RAM G 2025 (avg ₹327.4, floor ₹300) | 2026-11-06 |
 | Advocate | DSLSA legal-aid floor ₹9,000 + 2026 market ranges | 2026-11-06 |
-| LLM explainer | BharatCode Qwen 3.8 27B, POST /chat/completions | live (503-tested) |
+| Plain-language explainer | Deterministic template over the estimate; no model in the decision flow | local |
 | Per-case (optional) | eCourtsIndia partner API (THIRD-PARTY, paid, key-gated) | — |
 
 Full table with URLs: the `/sources` page. Rule of the house: **if a fee isn't sourced,
@@ -96,7 +96,7 @@ Until then the app uses the national average and labels it.
 
 ```
 BHARATCODE_API_KEY   # server-side ONLY (bc_live_…) — never NEXT_PUBLIC_, never commit
-BHARATCODE_BASE_URL  # default https://bharatcode.ai/api/model/v1
+BHARATCODE_BASE_URL  # OpenAI-compatible base URL (preset in .env.example)
 BHARATCODE_MODEL     # default qwen-3.8-27b
 ECI_BASE_URL         # default https://webapi.ecourtsindia.com
 ECI_KEY              # optional (eci_live_…) — absent ⇒ aggregate mode + banner
@@ -109,15 +109,14 @@ DATA_GOV_API_KEY     # optional, for data.gov.in dataset lookups
 - `POST /api/estimate` — `{caseType, state, courtLevel, suitValue, advocatePerAppearance,
   dailyWage, daysPerHearing, hearingsPerMonth}` → `{input, result, scatter, explainer}`.
 - `GET /api/estimate?q=…` — per-case search when `ECI_KEY` set; otherwise aggregate-mode notice.
-- `GET /api/health` — `{bharatcode, eci, mode}`.
+- `GET /api/health` — `{ok, eci, mode}`.
 
 ## Live-call log (tested 2026-11-06)
 
 - **NJDG**: `GET https://njdg.ecourts.gov.in/` → 200, 199KB HTML; cards + `fetchYearData`
   band string parsed (Civil 1,12,52,654; disposed 3,40,163/mo). ✅
-- **BharatCode**: `GET /models` → 200, `qwen-3.8-27b` live, 262k ctx. ✅
-  `POST /chat/completions` + `/responses` → **503 model_unavailable** (busy) — app backoffs
-  (0/2/5s) then serves the template explainer with identical numbers. ✅ (honest fallback paths exercised)
+- **Model endpoint**: `GET /models` → 200, `qwen-3.8-27b` live, 262k ctx. ✅
+  `POST /chat/completions` → **503 model_unavailable** (busy). The estimate and the explainer do not depend on it, so the output is unaffected. ✅
 - **eCourtsIndia partner**: no key → 401 `INVALID_TOKEN` as designed; app banner shows
   “Per-case API not configured — showing NJDG aggregates”. ✅
 - **data.gov.in**: catalog search returns JS HTML (no JSON) — linked, not embedded. ✅ (documented)
